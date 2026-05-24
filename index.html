@@ -220,6 +220,69 @@ contract AstraeaGrantEscrowVault {
         </div>
     </section>
 
+    <!-- Submit Local Assessment Section -->
+    <section class="upload-section" id="upload">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="upload-title">Submit Local Assessment</h2>
+                <p class="section-desc">Upload or capture housing images to trigger VLM spectral and structural evaluations.</p>
+            </div>
+
+            <div class="upload-wrapper grid grid-2">
+                <!-- Ingress Controls -->
+                <div class="upload-card card-glass" id="upload-card-panel">
+                    <h3 class="sim-panel-title">Mobile Camera Ingress</h3>
+                    
+                    <div class="control-group">
+                        <label for="target-select">Select Inspection Target</label>
+                        <select id="target-select">
+                            <option value="roof">Roof structure condition</option>
+                            <option value="water">Water access and contamination sources</option>
+                            <option value="latrine">Sanitary toilet connection</option>
+                            <option value="floor">Paving floor composition</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Capture Image</label>
+                        <div class="file-dropzone" id="dropzone">
+                            <span class="dropzone-text">📷 Take Photo / Choose File</span>
+                            <input type="file" id="camera-input" accept="image/*" capture="environment">
+                        </div>
+                    </div>
+
+                    <div class="upload-preview" id="preview-box">
+                        <span id="preview-placeholder">No image captured yet</span>
+                        <img id="preview-img" alt="Captured facade structure" style="display:none; max-width: 100%; border-radius: 8px; border: 1px solid var(--border-color);">
+                    </div>
+
+                    <button class="btn btn-primary btn-large btn-full" id="btn-submit-assessment" disabled>
+                        Submit to VLM Pipeline
+                    </button>
+                </div>
+
+                <!-- Event Console Logger -->
+                <div class="upload-log-panel card-glass" id="upload-log-panel">
+                    <h3 class="sim-panel-title">Ingress Event Logger</h3>
+                    <div class="ledger-terminal">
+                        <div class="terminal-top-bar">
+                            <div class="terminal-dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <span class="terminal-title">Metadata Ingress Logger (JSON)</span>
+                        </div>
+                        <pre class="terminal-code"><code id="ingress-log-output">{
+  "status": "AWAITING_INPUT",
+  "message": "Upload a photo to view metadata variables..."
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container footer-container">
@@ -364,6 +427,209 @@ contract AstraeaGrantEscrowVault {
 
         // Initial run
         updateSimulation();
+
+        // Highlight initial log output
+        const ingressLogOutput = document.getElementById('ingress-log-output');
+        ingressLogOutput.innerHTML = syntaxHighlightJson({
+            "status": "AWAITING_INPUT",
+            "message": "Upload a photo to view metadata variables..."
+        });
+
+        // Mobile Camera Ingress Integration
+        const cameraInput = document.getElementById('camera-input');
+        const dropzone = document.getElementById('dropzone');
+        const previewPlaceholder = document.getElementById('preview-placeholder');
+        const previewImg = document.getElementById('preview-img');
+        const btnSubmitAssessment = document.getElementById('btn-submit-assessment');
+        const targetSelect = document.getElementById('target-select');
+
+        let capturedFile = null;
+
+        // Drag and Drop event handlers
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, e => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, e => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('dragover');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', e => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files && files.length > 0) {
+                cameraInput.files = files;
+                handleImageSelected(files[0]);
+            }
+        }, false);
+
+        cameraInput.addEventListener('change', e => {
+            if (e.target.files && e.target.files.length > 0) {
+                handleImageSelected(e.target.files[0]);
+            }
+        });
+
+        function handleImageSelected(file) {
+            capturedFile = file;
+            dropzone.classList.add('has-file');
+            
+            // Read file for preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                previewPlaceholder.style.display = 'none';
+                btnSubmitAssessment.removeAttribute('disabled');
+            };
+            reader.readAsDataURL(file);
+
+            // Log metadata variables matching VLM ingress schemas to ingressLogOutput
+            logIngressMetadata("INGEST_BUFFERED", file);
+        }
+
+        function generateMockH3Index() {
+            // Generates a valid-looking H3 resolution-8 index placeholder for Kibera, Nairobi
+            const chars = '0123456789abcdef';
+            let index = '887a60';
+            for (let i = 0; i < 9; i++) {
+                index += chars[Math.floor(Math.random() * 16)];
+            }
+            return index;
+        }
+
+        function logIngressMetadata(status, file) {
+            const target = targetSelect.value;
+            const timestamp = new Date().toISOString();
+            
+            const metadata = {
+                "event": "FILE_SELECTED",
+                "status": status,
+                "timestamp": timestamp,
+                "file_metadata": {
+                    "name": file ? file.name : "facade_capture.jpg",
+                    "size_bytes": file ? file.size : 2048576,
+                    "mime_type": file ? file.type : "image/jpeg"
+                },
+                "spatial_anonymization": {
+                    "h3_index_level_8": generateMockH3Index(),
+                    "zk_snark_proof_hash": "0x3f5c9e2d" + Math.floor(Math.random() * 100000000).toString(16) + "e4a1b",
+                    "status": "ANONYMIZED_AND_VERIFIED"
+                },
+                "ingestion_target": target,
+                "vlm_model_target": "Gemini 3.5 Flash VLM"
+            };
+
+            ingressLogOutput.innerHTML = syntaxHighlightJson(metadata);
+        }
+
+        // Dropdown selection updates metadata log
+        targetSelect.addEventListener('change', () => {
+            if (capturedFile) {
+                logIngressMetadata("INGEST_BUFFERED", capturedFile);
+            }
+        });
+
+        // Submit Assessment click handler
+        btnSubmitAssessment.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!capturedFile) return;
+
+            // Change button state to disabled during processing
+            btnSubmitAssessment.disabled = true;
+            btnSubmitAssessment.textContent = "Uploading to IPFS...";
+            
+            const timestamp = new Date().toISOString();
+            const target = targetSelect.value;
+            
+            const queueLog = {
+                "event": "PIPELINE_TRIGGERED",
+                "status": "QUEUED_FOR_VLM_HEVI_PIPELINE",
+                "timestamp": timestamp,
+                "ipfs_cid": "QmXoyp" + Math.floor(Math.random() * 100000000).toString(16) + "HbbB2fXadY76z2351RxntFr",
+                "queue_priority": "HIGH",
+                "target_metric": target
+            };
+            
+            ingressLogOutput.innerHTML = syntaxHighlightJson(queueLog);
+
+            // Phase 2: Simulating Gemini 3.5 VLM Analysis Response after 1200ms
+            setTimeout(() => {
+                btnSubmitAssessment.textContent = "Analyzing with Gemini VLM...";
+                
+                const analyzingLog = {
+                    "event": "VLM_MODEL_PROCESSING",
+                    "status": "EXECUTING_INFERENCE_PIPELINE",
+                    "timestamp": new Date().toISOString(),
+                    "vlm_model": "Gemini 3.5 Flash VLM",
+                    "active_prompt_template": "HEVI_VLM_INGEST_v2.0",
+                    "temperature": 0.2
+                };
+                
+                ingressLogOutput.innerHTML = syntaxHighlightJson(analyzingLog);
+            }, 1200);
+
+            // Phase 3: HEVI Calculation and Verification after 3000ms
+            setTimeout(() => {
+                btnSubmitAssessment.textContent = "Assessment Verified!";
+                btnSubmitAssessment.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
+                
+                // Let's generate a severe condition so it highlights the VLM output!
+                // We'll update the sliders dynamically based on target select:
+                let VlmOutputs = {
+                    "roofing_degradation": parseFloat(roofSlider.value),
+                    "water_vulnerability": parseFloat(waterSlider.value),
+                    "latrine_vulnerability": latrineSelect.value === 'none' ? 1.0 : (latrineSelect.value === 'present' ? 0.5 : 0.0),
+                    "floor_vulnerability": parseFloat(floorSlider.value)
+                };
+                
+                if (target === 'roof') {
+                    VlmOutputs.roofing_degradation = 0.92;
+                    roofSlider.value = 0.92;
+                } else if (target === 'water') {
+                    VlmOutputs.water_vulnerability = 0.88;
+                    waterSlider.value = 0.88;
+                } else if (target === 'latrine') {
+                    VlmOutputs.latrine_vulnerability = 1.0; // none
+                    latrineSelect.value = 'none';
+                } else if (target === 'floor') {
+                    VlmOutputs.floor_vulnerability = 0.94;
+                    floorSlider.value = 0.94;
+                }
+                
+                // Update the simulator display to match VLM output!
+                updateSimulation();
+
+                const completeLog = {
+                    "event": "INGEST_PIPELINE_COMPLETE",
+                    "status": "HEVI_METRICS_EVALUATED",
+                    "timestamp": new Date().toISOString(),
+                    "extracted_vlm_metrics": VlmOutputs,
+                    "blockchain_state": {
+                        "contract_verified": true,
+                        "grant_escrow_approved": true,
+                        "action": "MUTATED_VAULT_ROUTING_PROPOSAL"
+                    }
+                };
+
+                ingressLogOutput.innerHTML = syntaxHighlightJson(completeLog);
+
+                // Reset button state after a delay
+                setTimeout(() => {
+                    btnSubmitAssessment.textContent = "Submit to VLM Pipeline";
+                    btnSubmitAssessment.disabled = false;
+                    btnSubmitAssessment.style.background = "";
+                }, 4000);
+
+            }, 3000);
+        });
     </script>
 </body>
 </html>
