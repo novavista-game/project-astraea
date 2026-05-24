@@ -68,6 +68,10 @@ h1, h2, h3, h4 {
     grid-template-columns: 1fr;
 }
 
+.grid-5 {
+    grid-template-columns: 1fr;
+}
+
 @media (min-width: 768px) {
     .grid-2 {
         grid-template-columns: repeat(2, 1fr);
@@ -80,11 +84,19 @@ h1, h2, h3, h4 {
     .grid-4 {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .grid-5 {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (min-width: 1024px) {
     .grid-4 {
         grid-template-columns: repeat(4, 1fr);
+    }
+
+    .grid-5 {
+        grid-template-columns: repeat(5, 1fr);
     }
 }
 

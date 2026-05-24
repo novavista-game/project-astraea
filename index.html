@@ -84,7 +84,7 @@
                 <h2 class="section-title" id="metrics-title">Global Ingress Evaluation Metrics</h2>
                 <p class="section-desc">Standardizing structural audits through Sentinel-2 satellite telemetry and Gemini 3.5 Flash VLM analysis.</p>
             </div>
-            <div class="grid grid-4">
+            <div class="grid grid-5">
                 <div class="card card-flat" id="metric-roof">
                     <span class="metric-num">01</span>
                     <h4 class="metric-heading">Roofing Condition</h4>
@@ -104,6 +104,11 @@
                     <span class="metric-num">04</span>
                     <h4 class="metric-heading">Floor Composition</h4>
                     <p class="metric-body">Detects raw dirt flooring vs. concrete paving to calculate risk indexes for hookworm, sand-fly, and parasitic infection vectors.</p>
+                </div>
+                <div class="card card-flat" id="metric-kitchen">
+                    <span class="metric-num">05</span>
+                    <h4 class="metric-heading">Kitchen Infrastructure</h4>
+                    <p class="metric-body">Evaluates ventilation efficiency, range hood functionality, and electrical/gas layout proximity to water sources to compute localized indoor air quality risks and fire hazard mitigation indexes.</p>
                 </div>
             </div>
         </div>
@@ -241,6 +246,7 @@ contract AstraeaGrantEscrowVault {
                             <option value="water">Water & Sanitation Infrastructure</option>
                             <option value="latrine">Sanitary Latrine Access</option>
                             <option value="flooring">Flooring Composition</option>
+                            <option value="kitchen">Kitchen Infrastructure</option>
                         </select>
                     </div>
 
@@ -624,7 +630,8 @@ contract AstraeaGrantEscrowVault {
                     "roofing_degradation": parseFloat(roofSlider.value),
                     "water_vulnerability": parseFloat(waterSlider.value),
                     "latrine_vulnerability": latrineSelect.value === 'none' ? 1.0 : (latrineSelect.value === 'present' ? 0.5 : 0.0),
-                    "floor_vulnerability": parseFloat(floorSlider.value)
+                    "floor_vulnerability": parseFloat(floorSlider.value),
+                    "kitchen_hazard_index": 0.20
                 };
                 
                 // US Retailer MCC Lock configuration based on target
@@ -663,6 +670,14 @@ contract AstraeaGrantEscrowVault {
                         "merchant_name": "Lowe's Home Improvement Outlets",
                         "merchant_category_code_mcc": 5211,
                         "mcc_description": "Lumber and Building Materials Outlets",
+                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                    };
+                } else if (target === 'kitchen') {
+                    VlmOutputs.kitchen_hazard_index = 0.85;
+                    merchantData = {
+                        "merchant_name": "The Home Depot",
+                        "merchant_category_code_mcc": 5732,
+                        "mcc_description": "Electronic Stores / Kitchen Appliances",
                         "status": "FUNDS_LOCKED_MCC_COMPLIANT"
                     };
                 }
