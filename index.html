@@ -315,6 +315,58 @@ contract AstraeaGrantEscrowVault {
         </div>
     </section>
 
+    <!-- Intake Application Form Section -->
+    <section class="intake-section" id="intake">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="intake-title">Intake Application Form</h2>
+                <p class="section-desc">Submit your qualitative housing context to prioritize grant funds based on safety and accessibility needs.</p>
+            </div>
+
+            <div class="intake-card card-glass" id="intake-panel">
+                <form id="application-form" onsubmit="return false;">
+                    <div class="grid grid-2">
+                        <div class="control-group">
+                            <label for="intake-name">Full Name</label>
+                            <input type="text" id="intake-name" placeholder="Enter full name" class="form-control" required>
+                        </div>
+                        <div class="control-group">
+                            <label for="intake-email">Email Address</label>
+                            <input type="email" id="intake-email" placeholder="name@domain.com" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="control-group" style="margin-top: 1rem;">
+                        <label for="intake-location">Pilot Location Network</label>
+                        <select id="intake-location" class="form-control">
+                            <option value="US" selected>United States Pilot Network (USD Escrow Routing)</option>
+                            <option value="KR">South Korea Pilot Network (KRW Escrow Routing)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group" style="margin-top: 1rem;">
+                        <label for="intake-intent">Statement of Intent</label>
+                        <textarea id="intake-intent" rows="3" placeholder="How do you intend to deploy these funds for your housing structure?" class="form-control" required></textarea>
+                    </div>
+
+                    <div class="control-group" style="margin-top: 1rem;">
+                        <label for="intake-health">Health & Impact Expectation</label>
+                        <textarea id="intake-health" rows="3" placeholder="What positive long-term health outcomes do you expect for your family?" class="form-control" required></textarea>
+                    </div>
+
+                    <div class="control-group" style="margin-top: 1rem;">
+                        <label for="intake-accessibility">Special Needs & Accessibility (Crucial)</label>
+                        <textarea id="intake-accessibility" rows="3" placeholder="Identify household disability requiring wheelchair ramp access, elderly safety metrics, infant air quality protection, or other accessibility requirements." class="form-control"></textarea>
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-large btn-full" id="btn-submit-application" style="margin-top: 1.5rem;">
+                        Submit Application
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
     <!-- Track Application Section -->
     <section class="tracking-section" id="tracking">
         <div class="container">
@@ -1200,6 +1252,86 @@ contract AstraeaGrantEscrowVault {
                 simulateTrackingProgress(state);
             }
         });
+
+        // Intake Form Submit Event Handler
+        const btnSubmitApplication = document.getElementById('btn-submit-application');
+        if (btnSubmitApplication) {
+            btnSubmitApplication.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('intake-name').value.trim();
+                const email = document.getElementById('intake-email').value.trim();
+                const location = document.getElementById('intake-location').value;
+                const intent = document.getElementById('intake-intent').value.trim();
+                const health = document.getElementById('intake-health').value.trim();
+                const accessibility = document.getElementById('intake-accessibility').value.trim();
+                
+                if (!name || !email || !intent || !health) {
+                    alert('Please fill out all required fields (Name, Email, Statement of Intent, and Health Expectation).');
+                    return;
+                }
+                
+                // Generate a localized tracking ID based on selection
+                const trackingId = "AST-" + location + "-" + Math.floor(1000 + Math.random() * 9000);
+                
+                // Store in tracking DB at step 0 (Submitted)
+                saveTrackingState(trackingId, 'roofing', 0, location);
+                lastGeneratedId = trackingId;
+                
+                // Scan fields for accessibility keywords
+                const textToCheck = (name + " " + intent + " " + health + " " + accessibility).toLowerCase();
+                const hasPriority = textToCheck.includes("disability") || textToCheck.includes("wheelchair") || textToCheck.includes("elderly");
+                
+                let complianceStatus = "COMPLIANCE_STATUS: VERIFIED_PUBLIC_GRANT_ELIGIBILITY";
+                if (hasPriority) {
+                    complianceStatus = "COMPLIANCE_STATUS: PRIORITIZED_ACCESSIBILITY_UPGRADE";
+                }
+                
+                const isKorea = (location === 'KR');
+                const merchantApproval = isKorea ? {
+                    "merchant_name": "LX Hausys Building Materials Co.",
+                    "merchant_category_code_mcc": 5211,
+                    "mcc_description": "Lumber and Building Materials Outlets (KOICA Audited)",
+                    "status": "APPROVED_FUNDS_LOCKED_PENDING_VLM"
+                } : {
+                    "merchant_name": "Lowe's Home Improvement Outlets",
+                    "merchant_category_code_mcc": 5211,
+                    "mcc_description": "Lumber and Building Materials Outlets",
+                    "status": "APPROVED_FUNDS_LOCKED_PENDING_VLM"
+                };
+                
+                // Output structured logs to the Ingress Event Logger
+                const logPayload = {
+                    "event": "APPLICATION_SUBMITTED",
+                    "status": complianceStatus,
+                    "timestamp": new Date().toISOString(),
+                    "tracking_id": trackingId,
+                    "applicant_context_window": {
+                        "typed_name": name,
+                        "email": email,
+                        "selected_location": isKorea ? "South Korea Pilot Program" : "US Pilot Program",
+                        "statement_of_intent": intent,
+                        "health_outcomes_expectation": health,
+                        "special_accessibility_needs": accessibility
+                    },
+                    "merchant_category_approvals": merchantApproval
+                };
+                
+                ingressLogOutput.innerHTML = syntaxHighlightJson(logPayload);
+                
+                // Display tracking generation banner
+                const banner = document.getElementById('tracking-gen-banner');
+                const bannerText = document.getElementById('generated-id-text');
+                bannerText.textContent = trackingId;
+                banner.style.display = 'block';
+                
+                // Scroll to tracking section
+                document.getElementById('tracking').scrollIntoView({ behavior: 'smooth' });
+                
+                // Set search input to the new ID for convenience
+                trackingInput.value = trackingId;
+            });
+        }
 
         // Initialize tracking database on page load
         initTrackingDB();

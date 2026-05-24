@@ -1088,3 +1088,60 @@ input:checked + .slider-toggle:before {
         margin-bottom: -12px;
     }
 }
+
+/* Intake Form Section Styles */
+.intake-section {
+    padding: 7rem 0;
+    background: var(--bg-dark);
+    border-top: 1px solid var(--border-color);
+}
+
+.intake-card {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 242, 254, 0.05);
+    transition: all var(--transition-speed);
+}
+
+.intake-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 15px var(--border-glow);
+}
+
+.form-control {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-white);
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    outline: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    transition: all var(--transition-speed);
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+textarea.form-control {
+    resize: vertical;
+    font-family: 'Outfit', sans-serif;
+}
+
+.control-group label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: var(--text-white);
+}
+
