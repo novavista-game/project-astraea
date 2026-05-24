@@ -82,7 +82,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title" id="metrics-title">Global Ingress Evaluation Metrics</h2>
-                <p class="section-desc">Standardizing structural audits through Sentinel-2 satellite telemetry and Gemini 3.5 Flash VLM analysis.</p>
+                <p class="section-desc">Standardizing structural audits in compliance with UN-Habitat development guidelines, KOICA international assistance policies, and Green Climate Fund (GCF) climate-resilience vulnerability frameworks.</p>
             </div>
             <div class="grid grid-5">
                 <div class="card card-flat" id="metric-roof">
@@ -192,6 +192,26 @@ contract AstraeaGrantEscrowVault {
                         <label for="floor-slider">Flooring Pathogen Exposure Risk (<span id="val-floor">0.85</span>)</label>
                         <input type="range" id="floor-slider" min="0.0" max="1.0" step="0.01" value="0.85">
                     </div>
+
+                    <div class="control-group">
+                        <label for="funding-select">Select Funding Source</label>
+                        <select id="funding-select">
+                            <option value="UN-Habitat" selected>UN-Habitat (Global Development)</option>
+                            <option value="KOICA">KOICA (Korea International Cooperation Agency)</option>
+                            <option value="GCF">Green Climate Fund (GCF-Resilience)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Localization Mode</label>
+                        <div class="toggle-container">
+                            <label class="switch">
+                                <input type="checkbox" id="korea-toggle">
+                                <span class="slider-toggle"></span>
+                            </label>
+                            <span class="toggle-label" id="toggle-label">Global Mode (Kenya / USD)</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="sim-results card-glass" id="sim-results-panel">
@@ -203,6 +223,7 @@ contract AstraeaGrantEscrowVault {
                             <span class="score-label">HEVI INDEX</span>
                         </div>
                         <div class="allocation-badge" id="grant-badge">Allocated Grant: $1,500 USDC</div>
+                        <div class="allocation-krw" id="grant-krw-badge" style="font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; color: #ffb703; font-weight: 600; margin-top: 4px;">(₩2,010,000 KRW equivalent)</div>
                     </div>
 
                     <!-- System Ledger Terminal Wrapper -->
@@ -328,6 +349,12 @@ contract AstraeaGrantEscrowVault {
         const reportOutput = document.getElementById('report-output');
         const grantBadge = document.getElementById('grant-badge');
 
+        // Global & Korea Localization
+        const fundingSelect = document.getElementById('funding-select');
+        const koreaToggle = document.getElementById('korea-toggle');
+        const toggleLabel = document.getElementById('toggle-label');
+        const grantKrwBadge = document.getElementById('grant-krw-badge');
+
         function syntaxHighlightJson(json) {
             if (typeof json !== 'string') {
                  json = JSON.stringify(json, undefined, 2);
@@ -392,13 +419,28 @@ contract AstraeaGrantEscrowVault {
             } else {
                 allocation = 0;
             }
+
+            // Exchange rate conversion
+            const rate = 1340;
+            const krwEquivalent = allocation * rate;
+            const isKorea = koreaToggle.checked;
             
+            toggleLabel.textContent = isKorea ? "Korea Mode (Songpa-gu / KRW)" : "Global Mode (Kenya / USD)";
+
             if (allocation > 0) {
-                grantBadge.textContent = `Allocated Grant: $${allocation.toLocaleString()} USDC`;
+                if (isKorea) {
+                    grantBadge.textContent = `Allocated Grant: ₩${krwEquivalent.toLocaleString()} KRW`;
+                    grantKrwBadge.textContent = `($${allocation.toLocaleString()} USD equivalent)`;
+                } else {
+                    grantBadge.textContent = `Allocated Grant: $${allocation.toLocaleString()} USDC`;
+                    grantKrwBadge.textContent = `(₩${krwEquivalent.toLocaleString()} KRW equivalent)`;
+                }
                 grantBadge.style.display = 'inline-block';
+                grantKrwBadge.style.display = 'block';
             } else {
                 grantBadge.textContent = `Vulnerability Low - Upgrades Postponed`;
                 grantBadge.style.display = 'inline-block';
+                grantKrwBadge.style.display = 'none';
             }
 
             // Post-upgrade simulated values
@@ -411,16 +453,35 @@ contract AstraeaGrantEscrowVault {
             const heviImprovement = (hevi - postHevi).toFixed(2);
             const infectionReduction = (((floorPathogen - postFloorPathogen) / Math.max(0.01, floorPathogen)) * 100.0).toFixed(2);
 
+            const fundingSource = fundingSelect.value;
+            let complianceMsg = "";
+            if (fundingSource === "UN-Habitat") {
+                complianceMsg = "UN-Habitat Urban Resilience Framework Compliant";
+            } else if (fundingSource === "GCF") {
+                complianceMsg = "GCF Climate-Resilience Environmental Audit Passed";
+            } else if (fundingSource === "KOICA") {
+                complianceMsg = "KOICA Official Development Assistance Standard Approved";
+            }
+
             // Output JSON Egress Transparency Report
             const report = {
                 "project_id": 1001,
+                "funding_parameters": {
+                    "source_agency": fundingSource,
+                    "compliance_audit_log": complianceMsg,
+                    "target_location": isKorea ? "Songpa-gu, Seoul, South Korea" : "Kibera, Nairobi, Kenya"
+                },
                 "donor_transparency_metrics": {
                     "pre_upgrade_hevi": parseFloat(hevi.toFixed(2)),
                     "post_upgrade_hevi": parseFloat(postHevi.toFixed(2)),
                     "hevi_improvement_score": parseFloat(heviImprovement),
                     "infection_risk_reduction_percentage": parseFloat(infectionReduction),
-                    "allocated_grant_usdc": allocation,
-                    "settlement_transaction_hash": "0x8e2b1001fa28f090b82f0c19a9bc0d12ab89c201d84a7e"
+                    "allocated_grant_usd": allocation,
+                    "currency_conversion": {
+                        "allocated_grant_krw": krwEquivalent,
+                        "usd_to_krw_rate": rate
+                    },
+                    "settlement_transaction_hash": isKorea ? "0x8e2b1001fa28f090b82f0c19a9bc0d12ab89c201d84a7e_KR" : "0x8e2b1001fa28f090b82f0c19a9bc0d12ab89c201d84a7e"
                 }
             };
             
@@ -431,6 +492,14 @@ contract AstraeaGrantEscrowVault {
         waterSlider.addEventListener('input', updateSimulation);
         latrineSelect.addEventListener('change', updateSimulation);
         floorSlider.addEventListener('input', updateSimulation);
+        koreaToggle.addEventListener('change', () => {
+            updateSimulation();
+            logIngressMetadata(capturedFile ? "INGEST_BUFFERED" : "AWAITING_INPUT", capturedFile);
+        });
+        fundingSelect.addEventListener('change', () => {
+            updateSimulation();
+            logIngressMetadata(capturedFile ? "INGEST_BUFFERED" : "AWAITING_INPUT", capturedFile);
+        });
 
         // Initial run
         updateSimulation();
@@ -510,6 +579,7 @@ contract AstraeaGrantEscrowVault {
         function logIngressMetadata(status, file) {
             const target = targetSelect.value;
             const timestamp = new Date().toISOString();
+            const isKorea = koreaToggle.checked;
             
             const metadata = {
                 "event": file ? "FILE_SELECTED" : "AWAITING_INPUT",
@@ -521,11 +591,13 @@ contract AstraeaGrantEscrowVault {
                     "mime_type": file ? file.type : "None"
                 },
                 "spatial_anonymization": {
-                    "h3_index_level_8": generateMockH3Index(),
+                    "h3_index_level_8": isKorea ? "8830e07a21fffff" : generateMockH3Index(),
+                    "location_context": isKorea ? "Songpa-gu, Seoul, South Korea" : "Kibera, Nairobi, Kenya",
                     "zk_snark_proof_hash": "0x3f5c9e2d" + Math.floor(Math.random() * 100000000).toString(16) + "e4a1b",
                     "status": "ANONYMIZED_AND_VERIFIED"
                 },
                 "ingestion_target": target,
+                "funding_agency": fundingSelect.value,
                 "vlm_model_target": "Gemini 3.5 Flash VLM"
             };
 
@@ -634,12 +706,19 @@ contract AstraeaGrantEscrowVault {
                     "kitchen_hazard_index": 0.20
                 };
                 
-                // US Retailer MCC Lock configuration based on target
+                // Merchant and category code configuration based on target and mode
                 let merchantData = {};
+                const isKorea = koreaToggle.checked;
+                
                 if (target === 'roofing') {
                     VlmOutputs.roofing_degradation = 0.92;
                     roofSlider.value = 0.92;
-                    merchantData = {
+                    merchantData = isKorea ? {
+                        "merchant_name": "LX Hausys Building Materials Co.",
+                        "merchant_category_code_mcc": 5211,
+                        "mcc_description": "Lumber and Building Materials Outlets (KOICA Audited)",
+                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                    } : {
                         "merchant_name": "Lowe's Home Improvement Outlets",
                         "merchant_category_code_mcc": 5211,
                         "mcc_description": "Lumber and Building Materials Outlets",
@@ -648,7 +727,12 @@ contract AstraeaGrantEscrowVault {
                 } else if (target === 'water') {
                     VlmOutputs.water_vulnerability = 0.88;
                     waterSlider.value = 0.88;
-                    merchantData = {
+                    merchantData = isKorea ? {
+                        "merchant_name": "HomePlus General Merchandise",
+                        "merchant_category_code_mcc": 5311,
+                        "mcc_description": "General Hardware / Merchandise (KOICA Audited)",
+                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                    } : {
                         "merchant_name": "The Home Depot",
                         "merchant_category_code_mcc": 5251,
                         "mcc_description": "Hardware Stores",
@@ -657,7 +741,12 @@ contract AstraeaGrantEscrowVault {
                 } else if (target === 'latrine') {
                     VlmOutputs.latrine_vulnerability = 1.0; // none
                     latrineSelect.value = 'none';
-                    merchantData = {
+                    merchantData = isKorea ? {
+                        "merchant_name": "HomePlus General Merchandise",
+                        "merchant_category_code_mcc": 5311,
+                        "mcc_description": "General Hardware / Merchandise (KOICA Audited)",
+                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                    } : {
                         "merchant_name": "The Home Depot",
                         "merchant_category_code_mcc": 5251,
                         "mcc_description": "Hardware Stores",
@@ -666,7 +755,12 @@ contract AstraeaGrantEscrowVault {
                 } else if (target === 'flooring') {
                     VlmOutputs.floor_vulnerability = 0.94;
                     floorSlider.value = 0.94;
-                    merchantData = {
+                    merchantData = isKorea ? {
+                        "merchant_name": "LX Hausys Premium Paving",
+                        "merchant_category_code_mcc": 5211,
+                        "mcc_description": "Lumber and Building Materials Outlets (KOICA Audited)",
+                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                    } : {
                         "merchant_name": "Lowe's Home Improvement Outlets",
                         "merchant_category_code_mcc": 5211,
                         "mcc_description": "Lumber and Building Materials Outlets",
@@ -674,7 +768,12 @@ contract AstraeaGrantEscrowVault {
                     };
                 } else if (target === 'kitchen') {
                     VlmOutputs.kitchen_hazard_index = 0.85;
-                    merchantData = {
+                    merchantData = isKorea ? {
+                        "merchant_name": "HomePlus Kitchen Appliances",
+                        "merchant_category_code_mcc": 5732,
+                        "mcc_description": "Electronic Stores / Kitchen Appliances (KOICA Audited)",
+                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                    } : {
                         "merchant_name": "The Home Depot",
                         "merchant_category_code_mcc": 5732,
                         "mcc_description": "Electronic Stores / Kitchen Appliances",
@@ -690,7 +789,7 @@ contract AstraeaGrantEscrowVault {
                     "status": "HEVI_METRICS_EVALUATED",
                     "timestamp": new Date().toISOString(),
                     "extracted_vlm_metrics": VlmOutputs,
-                    "us_merchant_integration_audit": merchantData,
+                    "merchant_integration_audit": merchantData,
                     "blockchain_state": {
                         "contract_verified": true,
                         "grant_escrow_approved": true,
