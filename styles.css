@@ -503,6 +503,12 @@ h1, h2, h3, h4 {
     font-family: 'Outfit', sans-serif;
 }
 
+.control-group select option {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+}
+
+
 /* Score Display */
 .score-display {
     display: flex;
