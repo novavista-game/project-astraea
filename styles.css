@@ -891,3 +891,200 @@ input:checked + .slider-toggle:before {
     color: var(--primary);
 }
 
+/* Live Application Tracking Status Styles */
+.tracking-section {
+    padding: 7rem 0;
+    background: var(--bg-deep);
+    border-top: 1px solid var(--border-color);
+}
+
+.tracking-card {
+    padding: 3rem 2rem;
+}
+
+.tracking-search-bar {
+    display: flex;
+    gap: 1rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+@media (max-width: 576px) {
+    .tracking-search-bar {
+        flex-direction: column;
+    }
+}
+
+.tracking-search-bar input[type="text"] {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-white);
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: all var(--transition-speed);
+}
+
+.tracking-search-bar input[type="text"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tracking-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.tracking-id-label, .tracking-updated-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-gray);
+}
+
+.stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2.5rem 0;
+    width: 100%;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    flex: 1;
+    z-index: 2;
+}
+
+.step-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--text-gray);
+    transition: all var(--transition-speed) ease-in-out;
+    font-weight: bold;
+}
+
+.step-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-gray);
+    transition: all var(--transition-speed) ease-in-out;
+}
+
+.step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border-color);
+    margin: 0 -15px;
+    margin-top: -24px;
+    z-index: 1;
+    transition: all var(--transition-speed) ease-in-out;
+}
+
+/* Stepper States */
+.step.completed .step-icon {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+.step.completed .step-label {
+    color: #10b981;
+}
+
+.step.active .step-icon {
+    border-color: var(--primary);
+    background: rgba(0, 242, 254, 0.1);
+    color: var(--primary);
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.35);
+    animation: stepPulse 2s infinite ease-in-out;
+}
+
+.step.active .step-label {
+    color: var(--primary);
+    text-shadow: 0 0 8px rgba(0, 242, 254, 0.3);
+}
+
+.step-line.completed {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+@keyframes stepPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(0, 242, 254, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 242, 254, 0);
+    }
+}
+
+.tracking-detail-box {
+    margin-top: 2rem;
+    padding: 1.2rem 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.01);
+}
+
+.tracking-detail-desc {
+    font-size: 0.95rem;
+    color: var(--text-gray);
+    line-height: 1.6;
+}
+
+/* Mobile Stepper Layout */
+@media (max-width: 768px) {
+    .stepper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding-left: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .step {
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+        text-align: left;
+        flex: none;
+        margin: 0.5rem 0;
+    }
+    
+    .step-line {
+        width: 2px;
+        height: 35px;
+        margin: 0;
+        margin-left: 21px; /* aligns with center of 44px icon */
+        flex: none;
+        margin-top: -12px;
+        margin-bottom: -12px;
+    }
+}

@@ -287,6 +287,10 @@ contract AstraeaGrantEscrowVault {
                     <button class="btn btn-primary btn-large btn-full" id="btn-submit-assessment" disabled>
                         Submit to VLM Pipeline
                     </button>
+                    
+                    <div id="tracking-gen-banner" style="display: none; margin-top: 1rem; background: rgba(0, 242, 254, 0.08); border: 1px dashed var(--primary); padding: 0.8rem; border-radius: 6px; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif; text-align: center;">
+                        🎉 Tracking ID Generated: <strong id="generated-id-text" class="text-glow">AST-US-1024</strong>. Copy it to track status below.
+                    </div>
                 </div>
 
                 <!-- Event Console Logger -->
@@ -305,6 +309,62 @@ contract AstraeaGrantEscrowVault {
   "status": "AWAITING_INPUT",
   "message": "Upload a photo to view metadata variables..."
 }</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Track Application Section -->
+    <section class="tracking-section" id="tracking">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="tracking-title">Live Application Tracking Status</h2>
+                <p class="section-desc">Track the real-time processing state of your grant matching and spatial audit pipeline.</p>
+            </div>
+
+            <div class="tracking-card card-glass" id="tracking-panel">
+                <div class="tracking-search-bar">
+                    <input type="text" id="tracking-input" placeholder="Enter Tracking ID (e.g., AST-US-1024 or AST-KR-2026)">
+                    <button class="btn btn-primary" id="btn-track">Track Application</button>
+                </div>
+                
+                <div class="tracking-status-container" id="tracking-status-container" style="display: none; margin-top: 2.5rem;">
+                    <div class="tracking-info-header">
+                        <span class="tracking-id-label">Application ID: <strong id="display-track-id" class="text-glow">AST-US-1024</strong></span>
+                        <span class="tracking-updated-label">Last Updated: <span id="display-track-time">Just now</span></span>
+                    </div>
+                    
+                    <!-- Stepper Progress Pipeline -->
+                    <div class="stepper">
+                        <div class="step" id="step-submitted">
+                            <div class="step-icon">✓</div>
+                            <div class="step-label">Submitted</div>
+                        </div>
+                        <div class="step-line" id="line-1"></div>
+                        <div class="step" id="step-vlm">
+                            <div class="step-icon">⚙</div>
+                            <div class="step-label">VLM Analysis</div>
+                        </div>
+                        <div class="step-line" id="line-2"></div>
+                        <div class="step" id="step-matching">
+                            <div class="step-icon">⚓</div>
+                            <div class="step-label">Grant Matching</div>
+                        </div>
+                        <div class="step-line" id="line-3"></div>
+                        <div class="step" id="step-audit">
+                            <div class="step-icon">🛡️</div>
+                            <div class="step-label">Agency Audit</div>
+                        </div>
+                        <div class="step-line" id="line-4"></div>
+                        <div class="step" id="step-locked">
+                            <div class="step-icon">🔒</div>
+                            <div class="step-label">Funds Locked</div>
+                        </div>
+                    </div>
+
+                    <div class="tracking-detail-box" id="tracking-detail-box">
+                        <p id="tracking-detail-desc" class="tracking-detail-desc">VLM inference completed. Routing grant allocation matching proposed coordinates...</p>
                     </div>
                 </div>
             </div>
@@ -336,6 +396,7 @@ contract AstraeaGrantEscrowVault {
 
     <!-- Interactive script -->
     <script>
+        let lastGeneratedId = null;
         const roofSlider = document.getElementById('roof-slider');
         const waterSlider = document.getElementById('water-slider');
         const latrineSelect = document.getElementById('latrine-select');
@@ -661,13 +722,24 @@ contract AstraeaGrantEscrowVault {
             btnSubmitAssessment.disabled = true;
             btnSubmitAssessment.textContent = "Uploading to IPFS...";
             
+            const isKorea = koreaToggle.checked;
+            const randomId = "AST-" + (isKorea ? "KR" : "US") + "-" + Math.floor(1000 + Math.random() * 9000);
+            saveTrackingState(randomId, target, 1, isKorea ? "KR" : "US");
+            lastGeneratedId = randomId;
+
+            const banner = document.getElementById('tracking-gen-banner');
+            const bannerText = document.getElementById('generated-id-text');
+            bannerText.textContent = randomId;
+            banner.style.display = 'block';
+
             const queueLog = {
                 "event": "PIPELINE_TRIGGERED",
                 "status": "QUEUED_FOR_VLM_HEVI_PIPELINE",
                 "timestamp": timestamp,
                 "ipfs_cid": "QmXoyp" + Math.floor(Math.random() * 100000000).toString(16) + "HbbB2fXadY76z2351RxntFr",
                 "queue_priority": "HIGH",
-                "target_metric": target
+                "target_metric": target,
+                "generated_tracking_id": randomId
             };
             
             ingressLogOutput.innerHTML = syntaxHighlightJson(queueLog);
@@ -799,6 +871,11 @@ contract AstraeaGrantEscrowVault {
 
                 ingressLogOutput.innerHTML = syntaxHighlightJson(completeLog);
 
+                if (lastGeneratedId) {
+                    const isKorea = koreaToggle.checked;
+                    saveTrackingState(lastGeneratedId, target, 4, isKorea ? "KR" : "US");
+                }
+
                 // Reset button state after a delay
                 setTimeout(() => {
                     btnSubmitAssessment.textContent = "Submit to VLM Pipeline";
@@ -817,6 +894,16 @@ contract AstraeaGrantEscrowVault {
             const assessment = JSON.parse(cached);
             localStorage.removeItem('cached_assessments');
 
+            const isKorea = koreaToggle.checked;
+            const randomId = "AST-" + (isKorea ? "KR" : "US") + "-" + Math.floor(1000 + Math.random() * 9000);
+            saveTrackingState(randomId, assessment.target, 1, isKorea ? "KR" : "US");
+            lastGeneratedId = randomId;
+
+            const banner = document.getElementById('tracking-gen-banner');
+            const bannerText = document.getElementById('generated-id-text');
+            bannerText.textContent = randomId;
+            banner.style.display = 'block';
+
             // Log network recovery and trigger sync process
             ingressLogOutput.innerHTML = syntaxHighlightJson({
                 "event": "NETWORK_RECOVERED",
@@ -827,7 +914,8 @@ contract AstraeaGrantEscrowVault {
                     "target_metric": assessment.target,
                     "file_name": assessment.file_name,
                     "buffered_since": assessment.buffered_timestamp
-                }
+                },
+                "generated_tracking_id": randomId
             });
 
             btnSubmitAssessment.disabled = true;
@@ -849,6 +937,272 @@ contract AstraeaGrantEscrowVault {
                 executeVLMProcess(assessment.target, true);
             }, 3000);
         });
+
+        // --- Live Application Tracking Status Logic ---
+        const trackingInput = document.getElementById('tracking-input');
+        const btnTrack = document.getElementById('btn-track');
+        const trackingStatusContainer = document.getElementById('tracking-status-container');
+        const displayTrackId = document.getElementById('display-track-id');
+        const displayTrackTime = document.getElementById('display-track-time');
+        const trackingDetailDesc = document.getElementById('tracking-detail-desc');
+
+        const TRACKING_DB_KEY = 'astraea_tracking_db';
+
+        function initTrackingDB() {
+            let db = localStorage.getItem(TRACKING_DB_KEY);
+            if (!db) {
+                db = {
+                    'AST-US-1024': {
+                        id: 'AST-US-1024',
+                        target: 'latrine',
+                        step: 4,
+                        region: 'US',
+                        updatedAt: new Date().toISOString()
+                    },
+                    'AST-KR-2026': {
+                        id: 'AST-KR-2026',
+                        target: 'roofing',
+                        step: 4,
+                        region: 'KR',
+                        updatedAt: new Date().toISOString()
+                    }
+                };
+                localStorage.setItem(TRACKING_DB_KEY, JSON.stringify(db));
+            } else {
+                let parsed = JSON.parse(db);
+                let updated = false;
+                if (!parsed['AST-US-1024']) {
+                    parsed['AST-US-1024'] = {
+                        id: 'AST-US-1024',
+                        target: 'latrine',
+                        step: 4,
+                        region: 'US',
+                        updatedAt: new Date().toISOString()
+                    };
+                    updated = true;
+                }
+                if (!parsed['AST-KR-2026']) {
+                    parsed['AST-KR-2026'] = {
+                        id: 'AST-KR-2026',
+                        target: 'roofing',
+                        step: 4,
+                        region: 'KR',
+                        updatedAt: new Date().toISOString()
+                    };
+                    updated = true;
+                }
+                if (updated) {
+                    localStorage.setItem(TRACKING_DB_KEY, JSON.stringify(parsed));
+                }
+            }
+        }
+
+        function saveTrackingState(id, target, step, region) {
+            let db = JSON.parse(localStorage.getItem(TRACKING_DB_KEY) || '{}');
+            db[id] = {
+                id: id,
+                target: target,
+                step: step,
+                region: region,
+                updatedAt: new Date().toISOString()
+            };
+            localStorage.setItem(TRACKING_DB_KEY, JSON.stringify(db));
+        }
+
+        function getTrackingState(id) {
+            let db = JSON.parse(localStorage.getItem(TRACKING_DB_KEY) || '{}');
+            return db[id] || null;
+        }
+
+        function updateStepperUI(stepIndex) {
+            const steps = [
+                document.getElementById('step-submitted'),
+                document.getElementById('step-vlm'),
+                document.getElementById('step-matching'),
+                document.getElementById('step-audit'),
+                document.getElementById('step-locked')
+            ];
+            const lines = [
+                document.getElementById('line-1'),
+                document.getElementById('line-2'),
+                document.getElementById('line-3'),
+                document.getElementById('line-4')
+            ];
+
+            steps.forEach((step, idx) => {
+                step.classList.remove('completed', 'active');
+                if (idx < stepIndex) {
+                    step.classList.add('completed');
+                } else if (idx === stepIndex) {
+                    if (stepIndex === 4) {
+                        step.classList.add('completed');
+                    } else {
+                        step.classList.add('active');
+                    }
+                }
+            });
+
+            lines.forEach((line, idx) => {
+                line.classList.remove('completed');
+                if (idx < stepIndex) {
+                    line.classList.add('completed');
+                }
+            });
+        }
+
+        function getFinalStepDetails(target, region) {
+            const isKorea = (region === 'KR');
+            let description = "";
+            let logMessage = "";
+
+            if (isKorea) {
+                if (target === 'roofing') {
+                    description = "Escrow release verified. Funds of ₩2,010,000 KRW locked in KOICA-audited vault for LX Hausys Building Materials (MCC 5211 Compliance).";
+                    logMessage = "Grant matching complete. Escrow release verified for LX Hausys (Building Materials MCC 5211). KOICA-resilience compliance check passed.";
+                } else if (target === 'water') {
+                    description = "Escrow release verified. Funds locked in KOICA-audited vault for HomePlus General Merchandise (MCC 5311 Compliance).";
+                    logMessage = "Grant matching complete. Escrow release verified for HomePlus (General Hardware MCC 5311). KOICA compliance check passed.";
+                } else if (target === 'latrine') {
+                    description = "Escrow release verified. Funds locked in KOICA-audited vault for HomePlus Sanitary Upgrades (MCC 5311 Compliance).";
+                    logMessage = "Grant matching complete. Escrow release verified for HomePlus (General Hardware MCC 5311). KOICA compliance check passed.";
+                } else if (target === 'flooring') {
+                    description = "Escrow release verified. Funds locked in KOICA-audited vault for LX Hausys Premium Paving (MCC 5211 Compliance).";
+                    logMessage = "Grant matching complete. Escrow release verified for LX Hausys (Building Materials MCC 5211). KOICA compliance check passed.";
+                } else if (target === 'kitchen') {
+                    description = "Escrow release verified. Funds locked in KOICA-audited vault for HomePlus Kitchen Appliances (MCC 5732 Compliance).";
+                    logMessage = "Grant matching complete. Escrow release verified for HomePlus (Kitchen Appliances MCC 5732). KOICA compliance check passed.";
+                }
+            } else {
+                if (target === 'roofing') {
+                    description = "Escrow release verified. Funds of $1,500 USDC locked in UN-Habitat vault for Lowe's Home Improvement (MCC 5211 Compliance).";
+                    logMessage = "Grant matching complete. Escrow release verified for Lowe's (Building Materials MCC 5211). UN-Habitat resilience check passed.";
+                } else if (target === 'water') {
+                    description = "Escrow release verified. Funds of $1,500 USDC locked in UN-Habitat vault for The Home Depot (MCC 5251 Compliance).";
+                    logMessage = "Grant matching complete. Escrow release verified for The Home Depot (Hardware Stores MCC 5251). UN-Habitat check passed.";
+                } else if (target === 'latrine') {
+                    description = "Escrow release verified. Funds of $1,500 USDC locked in UN-Habitat vault for The Home Depot Sanitary Upgrades (MCC 5251 Compliance).";
+                    logMessage = "Grant matching complete. Escrow release verified for The Home Depot (Hardware Stores MCC 5251). UN-Habitat check passed.";
+                } else if (target === 'flooring') {
+                    description = "Escrow release verified. Funds of $1,500 USDC locked in UN-Habitat vault for Lowe's Home Improvement (MCC 5211 Compliance).";
+                    logMessage = "Grant matching complete. Escrow release verified for Lowe's (Building Materials MCC 5211). UN-Habitat check passed.";
+                } else if (target === 'kitchen') {
+                    description = "Escrow release verified. Funds of $1,500 USDC locked in UN-Habitat vault for The Home Depot (MCC 5732 Compliance).";
+                    logMessage = "Grant matching complete. Escrow release verified for The Home Depot (Kitchen Appliances MCC 5732). UN-Habitat check passed.";
+                }
+            }
+
+            return { description, logMessage };
+        }
+
+        function logTrackingEvent(id, step, target, region, message) {
+            const stepNames = ["Submitted", "VLM Analysis", "Grant Matching", "Agency Audit", "Funds Locked"];
+            const isKorea = (region === 'KR');
+            
+            const logData = {
+                "event": "TRACKING_STATE_UPDATE",
+                "timestamp": new Date().toISOString(),
+                "tracking_id": id,
+                "current_pipeline_step": stepNames[step],
+                "step_index": step,
+                "inspection_target": target,
+                "region_context": isKorea ? "Songpa-gu, Seoul, South Korea" : "Kibera, Nairobi, Kenya",
+                "pipeline_status": step === 4 ? "COMPLETE" : "IN_PROGRESS",
+                "system_message": message
+            };
+
+            ingressLogOutput.innerHTML = syntaxHighlightJson(logData);
+        }
+
+        let simulationInterval = null;
+
+        function simulateTrackingProgress(state) {
+            let currentStep = state.step;
+            
+            const stepDetails = [
+                {
+                    desc: "Application structure data successfully ingested and stored on IPFS. Awaiting VLM evaluation.",
+                    log: "Ingress data buffered. Payload queued for VLM HEVI assessment."
+                },
+                {
+                    desc: "Gemini 3.5 Flash VLM executing structural degradation and pathogenetic risk assessments.",
+                    log: "Executing VLM inference. Analyzing target metrics and computing spatial anonymization coefficients."
+                },
+                {
+                    desc: "VLM assessment complete. Compiling HEVI scores and matching with public donor policies.",
+                    log: "HEVI score computed. Searching grant routing tables for NGO compliance matching."
+                },
+                {
+                    desc: "NGO/Gov agency compliance audit in progress. Verification Containment Circuit verified.",
+                    log: "ZKP spatial validation verified. Generating multi-agency clearance signatures."
+                },
+                {
+                    desc: "",
+                    log: ""
+                }
+            ];
+
+            function runStep() {
+                updateStepperUI(currentStep);
+                
+                let descText = stepDetails[currentStep].desc;
+                let logMsg = stepDetails[currentStep].log;
+                
+                if (currentStep === 4) {
+                    const finalDetails = getFinalStepDetails(state.target, state.region);
+                    descText = finalDetails.description;
+                    logMsg = finalDetails.logMessage;
+                }
+
+                trackingDetailDesc.textContent = descText;
+                logTrackingEvent(state.id, currentStep, state.target, state.region, logMsg);
+                
+                saveTrackingState(state.id, state.target, currentStep, state.region);
+
+                if (currentStep < 4) {
+                    currentStep++;
+                    simulationInterval = setTimeout(runStep, 2000);
+                }
+            }
+
+            runStep();
+        }
+
+        btnTrack.addEventListener('click', () => {
+            const inputVal = trackingInput.value.trim().toUpperCase();
+            if (!inputVal) {
+                alert('Please enter a valid Application Tracking ID.');
+                return;
+            }
+
+            if (simulationInterval) {
+                clearTimeout(simulationInterval);
+                simulationInterval = null;
+            }
+
+            const state = getTrackingState(inputVal);
+            if (!state) {
+                alert('Tracking ID not found. Try AST-US-1024, AST-KR-2026, or submit a new assessment to generate one.');
+                return;
+            }
+
+            trackingStatusContainer.style.display = 'block';
+            displayTrackId.textContent = state.id;
+            
+            const date = new Date(state.updatedAt);
+            displayTrackTime.textContent = date.toLocaleTimeString() + " " + date.toLocaleDateString();
+
+            if (state.step === 4) {
+                updateStepperUI(4);
+                const details = getFinalStepDetails(state.target, state.region);
+                trackingDetailDesc.textContent = details.description;
+                logTrackingEvent(state.id, 4, state.target, state.region, details.logMessage);
+            } else {
+                simulateTrackingProgress(state);
+            }
+        });
+
+        // Initialize tracking database on page load
+        initTrackingDB();
 
         // Register Service Worker for PWA Capability
         if ('serviceWorker' in navigator) {
