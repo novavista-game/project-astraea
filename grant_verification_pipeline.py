@@ -85,7 +85,7 @@ class GrantVerificationPipeline:
                 "post_upgrade_hevi": post_hevi,
                 "hevi_improvement_score": hevi_improvement,
                 "infection_risk_reduction_percentage": infection_risk_reduction,
-                "funds_released_to_vendor_usdc": metadata.get("allocated_grant_usd", 1500.0),
+                "allocated_grant_usdc": metadata.get("allocated_grant_usd", 1500.0),
                 "settlement_transaction_hash": f"0x8e2b{project_id:04d}fa28f090b82f0c19a9bc0d12ab89c201d84a7e"
             },
             "validation_meta": {

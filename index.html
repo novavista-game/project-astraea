@@ -199,20 +199,22 @@ contract AstraeaGrantEscrowVault {
                         <div class="allocation-badge" id="grant-badge">Allocated Grant: $1,500 USDC</div>
                     </div>
 
-                    <div class="terminal-header">
-                        <span class="terminal-title">Egress Transparency Report (JSON)</span>
+                    <!-- System Ledger Terminal Wrapper -->
+                    <div class="ledger-terminal">
+                        <div class="terminal-top-bar">
+                            <div class="terminal-dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="audit-badge">
+                                <span class="pulse-dot"></span>
+                                🔒 Web3 Secured & Audited
+                            </div>
+                            <span class="terminal-title">Egress Transparency Report (JSON)</span>
+                        </div>
+                        <pre class="terminal-code"><code id="report-output"></code></pre>
                     </div>
-                    <pre class="terminal-code"><code id="report-output">{
-  "project_id": 1001,
-  "donor_transparency_metrics": {
-    "pre_upgrade_hevi": 69.65,
-    "post_upgrade_hevi": 11.5,
-    "hevi_improvement_score": 58.15,
-    "infection_risk_reduction_percentage": 88.24,
-    "funds_released_to_vendor_usdc": 1500.0,
-    "settlement_transaction_hash": "0x8e2b1001fa28f090b82f0c19a9bc0d12ab89c201d84a7e"
-  }
-}</code></pre>
                 </div>
             </div>
         </div>
@@ -255,6 +257,36 @@ contract AstraeaGrantEscrowVault {
         const heviScoreNum = document.getElementById('hevi-score-num');
         const reportOutput = document.getElementById('report-output');
         const grantBadge = document.getElementById('grant-badge');
+
+        function syntaxHighlightJson(json) {
+            if (typeof json !== 'string') {
+                 json = JSON.stringify(json, undefined, 2);
+            }
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g, function (match) {
+                let cls = 'json-number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'json-key';
+                        // Check if it's one of the critical variables to highlight them
+                        if (match.includes("allocated_grant_usdc") || match.includes("settlement_transaction_hash")) {
+                            cls = 'json-key json-critical';
+                        }
+                    } else {
+                        cls = 'json-string';
+                        // Check if it's the transaction hash value
+                        if (match.includes("0x8e2b")) {
+                            cls = 'json-string json-critical-val';
+                        }
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'json-boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'json-null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
 
         function updateSimulation() {
             const roofDeg = parseFloat(roofSlider.value);
@@ -317,12 +349,12 @@ contract AstraeaGrantEscrowVault {
                     "post_upgrade_hevi": parseFloat(postHevi.toFixed(2)),
                     "hevi_improvement_score": parseFloat(heviImprovement),
                     "infection_risk_reduction_percentage": parseFloat(infectionReduction),
-                    "funds_released_to_vendor_usdc": allocation,
+                    "allocated_grant_usdc": allocation,
                     "settlement_transaction_hash": "0x8e2b1001fa28f090b82f0c19a9bc0d12ab89c201d84a7e"
                 }
             };
             
-            reportOutput.textContent = JSON.stringify(report, null, 2);
+            reportOutput.innerHTML = syntaxHighlightJson(report);
         }
 
         roofSlider.addEventListener('input', updateSimulation);
