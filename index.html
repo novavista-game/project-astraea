@@ -236,10 +236,10 @@ contract AstraeaGrantEscrowVault {
                     <div class="control-group">
                         <label for="target-select">Select Inspection Target</label>
                         <select id="target-select">
-                            <option value="roof">Roof structure condition</option>
-                            <option value="water">Water access and contamination sources</option>
-                            <option value="latrine">Sanitary toilet connection</option>
-                            <option value="floor">Paving floor composition</option>
+                            <option value="roofing">Roof structure condition</option>
+                            <option value="water">Water source & supply vulnerability</option>
+                            <option value="latrine">Latrine & sanitation infrastructure status</option>
+                            <option value="flooring">Flooring composition & pathogen exposure</option>
                         </select>
                     </div>
 
@@ -590,7 +590,7 @@ contract AstraeaGrantEscrowVault {
                     "floor_vulnerability": parseFloat(floorSlider.value)
                 };
                 
-                if (target === 'roof') {
+                if (target === 'roofing') {
                     VlmOutputs.roofing_degradation = 0.92;
                     roofSlider.value = 0.92;
                 } else if (target === 'water') {
@@ -599,7 +599,7 @@ contract AstraeaGrantEscrowVault {
                 } else if (target === 'latrine') {
                     VlmOutputs.latrine_vulnerability = 1.0; // none
                     latrineSelect.value = 'none';
-                } else if (target === 'floor') {
+                } else if (target === 'flooring') {
                     VlmOutputs.floor_vulnerability = 0.94;
                     floorSlider.value = 0.94;
                 }
