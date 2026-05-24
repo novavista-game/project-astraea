@@ -234,8 +234,8 @@ contract AstraeaGrantEscrowVault {
                     <h3 class="sim-panel-title">Mobile Camera Ingress</h3>
                     
                     <div class="control-group">
-                        <label for="target-select">Select Inspection Target</label>
-                        <select id="target-select">
+                        <label for="inspection-target">Select Inspection Target</label>
+                        <select id="inspection-target" class="form-control">
                             <option value="roofing">Roofing Condition</option>
                             <option value="water">Water & Sanitation Infrastructure</option>
                             <option value="latrine">Sanitary Latrine Access</option>
@@ -441,7 +441,7 @@ contract AstraeaGrantEscrowVault {
         const previewPlaceholder = document.getElementById('preview-placeholder');
         const previewImg = document.getElementById('preview-img');
         const btnSubmitAssessment = document.getElementById('btn-submit-assessment');
-        const targetSelect = document.getElementById('target-select');
+        const targetSelect = document.getElementById('inspection-target');
 
         let capturedFile = null;
 
