@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Astraea | B2G Public Grant Allocation & Housing Ingress Infrastructure</title>
+    <meta name="description" content="Decentralized, zero-user-cost public grant escrow and verification platform matching international funds (UN, GCF) to housing upgrades in informal settlements using Gemini VLM.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-mode">
+    <!-- Navigation -->
+    <header class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand-logo" id="brand-logo">ASTRAEA</a>
+            <nav class="nav-menu">
+                <a href="#mission" class="nav-link" id="nav-link-mission">Mission</a>
+                <a href="#metrics" class="nav-link" id="nav-link-metrics">Standard Metrics</a>
+                <a href="#architecture" class="nav-link" id="nav-link-architecture">Architecture</a>
+                <a href="#simulator" class="nav-link" id="nav-link-simulator">HEVI Simulator</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="#simulator" class="btn btn-primary" id="btn-hero-nav">Launch Simulator</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+        <div class="gradient-overlay"></div>
+        <div class="container hero-container">
+            <div class="badge" id="badge-xprize">XPRIZE MOONSHOT APPLICATION</div>
+            <h1 class="hero-title" id="hero-title">Systemic Housing Upgrades with Purpose-Bound Escrow</h1>
+            <p class="hero-subtitle" id="hero-subtitle">
+                A B2G/G2C public grant allocation framework matching international funding directly to material vendors, using Multimodal VLM verification to deliver zero-cost structural upgrades for the unbanked.
+            </p>
+            <div class="hero-cta">
+                <a href="#simulator" class="btn btn-primary btn-large" id="btn-hero-primary">Test HEVI Simulator</a>
+                <a href="#metrics" class="btn btn-secondary btn-large" id="btn-hero-secondary">Read Evaluation Specs</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Backbone Concepts -->
+    <section class="mission-section" id="mission">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="mission-title">The Three Pillars of Project Astraea</h2>
+                <p class="section-desc">Re-engineering international aid and spatial verification for global housing equity.</p>
+            </div>
+            <div class="grid grid-3">
+                <div class="card card-glass animate-hover" id="card-pillar-1">
+                    <div class="card-icon icon-teal">Ø</div>
+                    <h3 class="card-title">Zero User Cost</h3>
+                    <p class="card-text">
+                        Traditional micro-loans create debt traps. Project Astraea matches public donor grants directly to local projects, ensuring vulnerable informal settlement residents pay nothing for structural upgrades.
+                    </p>
+                </div>
+                <div class="card card-glass animate-hover" id="card-pillar-2">
+                    <div class="card-icon icon-cyan">⚓</div>
+                    <h3 class="card-title">Purpose-Bound Escrow</h3>
+                    <p class="card-text">
+                        USDC stablecoins are locked in ERC-4626 adjacent vaults. Standard EOA cash withdrawals are blocked. Capital is routed strictly to whitelisted hardware merchants in 40/60 milestone releases.
+                    </p>
+                </div>
+                <div class="card card-glass animate-hover" id="card-pillar-3">
+                    <div class="card-icon icon-amber">🛡️</div>
+                    <h3 class="card-title">Spatial Anonymity</h3>
+                    <p class="card-text">
+                        Resident coordinates are obfuscated via H3 indexing and zk-SNARK containment circuits. Visuals and GPS are verified on-chain without leaking precise property locations to slumlords.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Standard Metrics -->
+    <section class="metrics-section" id="metrics">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="metrics-title">Global Ingress Evaluation Metrics</h2>
+                <p class="section-desc">Standardizing structural audits through Sentinel-2 satellite telemetry and Gemini 3.5 Flash VLM analysis.</p>
+            </div>
+            <div class="grid grid-4">
+                <div class="card card-flat" id="metric-roof">
+                    <span class="metric-num">01</span>
+                    <h4 class="metric-heading">Roofing Condition</h4>
+                    <p class="metric-body">Analyzes degradation index, sagging supports, structural rot, and material classification (asbestos sheet vs. corrugated iron vs. concrete slab).</p>
+                </div>
+                <div class="card card-flat" id="metric-water">
+                    <span class="metric-num">02</span>
+                    <h4 class="metric-heading">Water & Sanitation Ingress</h4>
+                    <p class="metric-body">Estimates drinking water coordinates distance and tracks physical proximity to open sewer runoffs and waste channels.</p>
+                </div>
+                <div class="card card-flat" id="metric-latrine">
+                    <span class="metric-num">03</span>
+                    <h4 class="metric-heading">Sanitary Latrine</h4>
+                    <p class="metric-body">Identifies presence of segregated toilets, closed drainage connection, and septic tank integration to mitigate disease transmission.</p>
+                </div>
+                <div class="card card-flat" id="metric-floor">
+                    <span class="metric-num">04</span>
+                    <h4 class="metric-heading">Floor Composition</h4>
+                    <p class="metric-body">Detects raw dirt flooring vs. concrete paving to calculate risk indexes for hookworm, sand-fly, and parasitic infection vectors.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack / Architecture -->
+    <section class="tech-section bg-gradient" id="architecture">
+        <div class="container grid grid-2">
+            <div class="tech-info">
+                <div class="badge" id="badge-tech">THE DEPLOYED BACKEND</div>
+                <h2 class="tech-heading" id="tech-heading">Technical Audacity</h2>
+                <p class="tech-text">
+                    Astraea synthesizes raw edge captures and satellite data into verifiable impact outputs. By matching **Sentinel-2** 10-meter bands (B4, B8, B11) with local photos, our super-resolution neural network resolves boundaries to a virtual 0.5-meter grid.
+                </p>
+                <p class="tech-text">
+                    Upon image ingest, the **Gemini 3.5 Flash** VLM computes the Healthspan Environmental Vulnerability Index (HEVI), generating a cryptographic proof on-chain to trigger payments.
+                </p>
+                <ul class="tech-list">
+                    <li><strong class="text-glow">AstraeaGrantEscrowVault.sol</strong>: Overrides standard withdraws to restrict liquidity pathways.</li>
+                    <li><strong class="text-glow">zk-SNARK Containment Circuits</strong>: Hides GPS inputs while proving H3 cell coordinates.</li>
+                </ul>
+            </div>
+            <div class="tech-visual card-glass" id="tech-visual-block">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">AstraeaGrantEscrowVault.sol</span>
+                </div>
+                <pre class="terminal-code"><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract AstraeaGrantEscrowVault {
+    // Standard ERC-4626 withdraw method strictly overridden
+    function withdraw(uint256 assets, address receiver, address owner) external returns (uint256) {
+        revert("ERR_WITHDRAW_LOCKED: Direct public withdrawals disabled.");
+    }
+
+    // Direct disbursement to whitelisted hardware vendor only
+    function releaseMilestone1(uint256 _projectId) external onlyGovernance {
+        require(whitelistedVendors[project.vendorAddress], "Invalid Vendor");
+        asset.transfer(project.vendorAddress, stage1Amount);
+    }
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive HEVI Simulator -->
+    <section class="simulator-section" id="simulator">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="sim-title">Live HEVI Assessment Simulator</h2>
+                <p class="section-desc">Test how the VLM compiles environmental and structural vulnerability scores to compute grant allocations.</p>
+            </div>
+            
+            <div class="simulator-wrapper grid grid-2">
+                <div class="sim-controls card-glass" id="sim-controls-panel">
+                    <h3 class="sim-panel-title">Ingress Parameter Configuration</h3>
+                    
+                    <div class="control-group">
+                        <label for="roof-slider">Roofing Degradation Index (<span id="val-roof">0.68</span>)</label>
+                        <input type="range" id="roof-slider" min="0.0" max="1.0" step="0.01" value="0.68">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="water-slider">Water Source Vulnerability Index (<span id="val-water">0.72</span>)</label>
+                        <input type="range" id="water-slider" min="0.0" max="1.0" step="0.01" value="0.72">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Latrine Infrastructure Status</label>
+                        <select id="latrine-select">
+                            <option value="none">No Latrine Present (Vulnerability: 1.0)</option>
+                            <option value="present" selected>Latrine Present / No Septic Tank (Vulnerability: 0.5)</option>
+                            <option value="septic">Latrine Present & Septic Tank Integrated (Vulnerability: 0.0)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="floor-slider">Flooring Pathogen Exposure Risk (<span id="val-floor">0.85</span>)</label>
+                        <input type="range" id="floor-slider" min="0.0" max="1.0" step="0.01" value="0.85">
+                    </div>
+                </div>
+
+                <div class="sim-results card-glass" id="sim-results-panel">
+                    <h3 class="sim-panel-title">Pipeline Output</h3>
+                    
+                    <div class="score-display">
+                        <div class="score-radial">
+                            <span class="score-number" id="hevi-score-num">69.7</span>
+                            <span class="score-label">HEVI INDEX</span>
+                        </div>
+                        <div class="allocation-badge" id="grant-badge">Allocated Grant: $1,500 USDC</div>
+                    </div>
+
+                    <div class="terminal-header">
+                        <span class="terminal-title">Egress Transparency Report (JSON)</span>
+                    </div>
+                    <pre class="terminal-code"><code id="report-output">{
+  "project_id": 1001,
+  "donor_transparency_metrics": {
+    "pre_upgrade_hevi": 69.65,
+    "post_upgrade_hevi": 11.5,
+    "hevi_improvement_score": 58.15,
+    "infection_risk_reduction_percentage": 88.24,
+    "funds_released_to_vendor_usdc": 1500.0,
+    "settlement_transaction_hash": "0x8e2b1001fa28f090b82f0c19a9bc0d12ab89c201d84a7e"
+  }
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <span class="brand-logo">ASTRAEA</span>
+                <p>Systemic housing ingress and grant allocation pipelines for global informal settlements.</p>
+            </div>
+            <div class="footer-links">
+                <strong>UN SDGs Alignment</strong>
+                <ul>
+                    <li>SDG 1.4: Equal Rights to Economic Resources</li>
+                    <li>SDG 8.10: Strengthen Financial Services Access</li>
+                    <li>SDG 11.1: Safe and Affordable Housing Ingress</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Project Astraea. Built for the XPRIZE Grand Challenge. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive script -->
+    <script>
+        const roofSlider = document.getElementById('roof-slider');
+        const waterSlider = document.getElementById('water-slider');
+        const latrineSelect = document.getElementById('latrine-select');
+        const floorSlider = document.getElementById('floor-slider');
+        
+        const valRoof = document.getElementById('val-roof');
+        const valWater = document.getElementById('val-water');
+        const valFloor = document.getElementById('val-floor');
+        
+        const heviScoreNum = document.getElementById('hevi-score-num');
+        const reportOutput = document.getElementById('report-output');
+        const grantBadge = document.getElementById('grant-badge');
+
+        function updateSimulation() {
+            const roofDeg = parseFloat(roofSlider.value);
+            const waterVuln = parseFloat(waterSlider.value);
+            const floorPathogen = parseFloat(floorSlider.value);
+            
+            valRoof.textContent = roofDeg.toFixed(2);
+            valWater.textContent = waterVuln.toFixed(2);
+            valFloor.textContent = floorPathogen.toFixed(2);
+
+            let latrineVuln = 1.0;
+            const latrineVal = latrineSelect.value;
+            if (latrineVal === 'septic') {
+                latrineVuln = 0.0;
+            } else if (latrineVal === 'present') {
+                latrineVuln = 0.5;
+            }
+
+            // Calculate HEVI
+            const w1 = 0.30, w2 = 0.25, w3 = 0.20, w4 = 0.25;
+            const hevi = (w1 * roofDeg + w2 * waterVuln + w3 * latrineVuln + w4 * floorPathogen) * 100.0;
+            
+            heviScoreNum.textContent = hevi.toFixed(1);
+
+            // Determine Mock Grant Allocation
+            let allocation = 1200;
+            if (hevi > 80.0) {
+                allocation = 2000;
+            } else if (hevi > 50.0) {
+                allocation = 1500;
+            } else if (hevi > 30.0) {
+                allocation = 800;
+            } else {
+                allocation = 0;
+            }
+            
+            if (allocation > 0) {
+                grantBadge.textContent = `Allocated Grant: $${allocation.toLocaleString()} USDC`;
+                grantBadge.style.display = 'inline-block';
+            } else {
+                grantBadge.textContent = `Vulnerability Low - Upgrades Postponed`;
+                grantBadge.style.display = 'inline-block';
+            }
+
+            // Post-upgrade simulated values
+            const postRoofDeg = 0.05;
+            const postWaterVuln = 0.30;
+            const postLatrineVuln = 0.0;
+            const postFloorPathogen = 0.10;
+            const postHevi = (w1 * postRoofDeg + w2 * postWaterVuln + w3 * postLatrineVuln + w4 * postFloorPathogen) * 100.0;
+            
+            const heviImprovement = (hevi - postHevi).toFixed(2);
+            const infectionReduction = (((floorPathogen - postFloorPathogen) / Math.max(0.01, floorPathogen)) * 100.0).toFixed(2);
+
+            // Output JSON Egress Transparency Report
+            const report = {
+                "project_id": 1001,
+                "donor_transparency_metrics": {
+                    "pre_upgrade_hevi": parseFloat(hevi.toFixed(2)),
+                    "post_upgrade_hevi": parseFloat(postHevi.toFixed(2)),
+                    "hevi_improvement_score": parseFloat(heviImprovement),
+                    "infection_risk_reduction_percentage": parseFloat(infectionReduction),
+                    "funds_released_to_vendor_usdc": allocation,
+                    "settlement_transaction_hash": "0x8e2b1001fa28f090b82f0c19a9bc0d12ab89c201d84a7e"
+                }
+            };
+            
+            reportOutput.textContent = JSON.stringify(report, null, 2);
+        }
+
+        roofSlider.addEventListener('input', updateSimulation);
+        waterSlider.addEventListener('input', updateSimulation);
+        latrineSelect.addEventListener('change', updateSimulation);
+        floorSlider.addEventListener('input', updateSimulation);
+
+        // Initial run
+        updateSimulation();
+    </script>
+</body>
+</html>
