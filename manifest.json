@@ -1,0 +1,18 @@
+{
+  "short_name": "Astraea",
+  "name": "Project Astraea Public Grant Matching",
+  "description": "B2G public grant allocation and multimodal VLM verification platform for informal settlements.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#070b13",
+  "theme_color": "#00f2fe",
+  "display": "standalone",
+  "orientation": "portrait"
+}

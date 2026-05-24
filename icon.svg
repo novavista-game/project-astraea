@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+    <defs>
+        <!-- Signature Primary Gradient (Cyan to Blue) -->
+        <linearGradient id="primary-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00f2fe" />
+            <stop offset="100%" stop-color="#4facfe" />
+        </linearGradient>
+        <!-- Shadow Filter -->
+        <filter id="glow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#00f2fe" flood-opacity="0.3"/>
+        </filter>
+    </defs>
+    <!-- Background Circle -->
+    <rect width="512" height="512" rx="112" fill="#070b13" />
+    <!-- Gradient Inner Ring -->
+    <rect x="24" y="24" width="464" height="464" rx="96" fill="none" stroke="url(#primary-grad)" stroke-width="4" opacity="0.4" />
+    <!-- Stylized Compass / Housing Icon Grid -->
+    <g filter="url(#glow)">
+        <!-- Outer Circle Ring -->
+        <circle cx="256" cy="256" r="140" fill="none" stroke="url(#primary-grad)" stroke-width="12" />
+        <!-- Inner Tri-Astraea Abstract Shape -->
+        <path d="M256 160 L330 310 L256 270 L182 310 Z" fill="url(#primary-grad)" />
+        <circle cx="256" cy="256" r="16" fill="#070b13" />
+        <!-- Pulse Indicators -->
+        <circle cx="256" cy="256" r="6" fill="#00f2fe" />
+    </g>
+</svg>

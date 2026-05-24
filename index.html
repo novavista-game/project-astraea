@@ -6,6 +6,7 @@
     <title>Project Astraea | B2G Public Grant Allocation & Housing Ingress Infrastructure</title>
     <meta name="description" content="Decentralized, zero-user-cost public grant escrow and verification platform matching international funds (UN, GCF) to housing upgrades in informal settlements using Gemini VLM.">
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
@@ -538,12 +539,49 @@ contract AstraeaGrantEscrowVault {
             e.preventDefault();
             if (!capturedFile) return;
 
-            // Change button state to disabled during processing
+            const target = targetSelect.value;
+            const timestamp = new Date().toISOString();
+
+            // Check if device is offline
+            if (!navigator.onLine) {
+                const assessmentData = {
+                    "target": target,
+                    "file_name": capturedFile.name,
+                    "file_size": capturedFile.size,
+                    "file_type": capturedFile.type,
+                    "buffered_timestamp": timestamp,
+                    "ipfs_cid": "QmXoyp" + Math.floor(Math.random() * 100000000).toString(16) + "HbbB2fXadY76z2351RxntFr",
+                    "spatial_anonymization": {
+                        "h3_index_level_8": generateMockH3Index(),
+                        "zk_snark_proof_hash": "0x3f5c9e2d" + Math.floor(Math.random() * 100000000).toString(16) + "e4a1b",
+                        "status": "ANONYMIZED_AND_VERIFIED"
+                    }
+                };
+
+                // Cache in localStorage
+                localStorage.setItem('cached_assessments', JSON.stringify(assessmentData));
+
+                ingressLogOutput.innerHTML = syntaxHighlightJson({
+                    "event": "INGEST_BUFFERED_OFFLINE",
+                    "status": "OFFLINE_CACHE_SAVED",
+                    "timestamp": timestamp,
+                    "message": "Inspector is currently OFFLINE. Assessment payload cached locally in localStorage.",
+                    "local_cache_key": "cached_assessments",
+                    "stored_payload": {
+                        "target_metric": target,
+                        "file_name": capturedFile.name,
+                        "file_size_bytes": capturedFile.size
+                    }
+                });
+
+                btnSubmitAssessment.disabled = true;
+                btnSubmitAssessment.textContent = "Waiting for Connection (Buffered)...";
+                return;
+            }
+
+            // Standard Online Ingress
             btnSubmitAssessment.disabled = true;
             btnSubmitAssessment.textContent = "Uploading to IPFS...";
-            
-            const timestamp = new Date().toISOString();
-            const target = targetSelect.value;
             
             const queueLog = {
                 "event": "PIPELINE_TRIGGERED",
@@ -556,29 +594,32 @@ contract AstraeaGrantEscrowVault {
             
             ingressLogOutput.innerHTML = syntaxHighlightJson(queueLog);
 
-            // Phase 2: Simulating Gemini 3.5 VLM Analysis Response after 1200ms
+            // Trigger VLM analysis
             setTimeout(() => {
-                btnSubmitAssessment.textContent = "Analyzing with Gemini VLM...";
-                
-                const analyzingLog = {
-                    "event": "VLM_MODEL_PROCESSING",
-                    "status": "EXECUTING_INFERENCE_PIPELINE",
-                    "timestamp": new Date().toISOString(),
-                    "vlm_model": "Gemini 3.5 Flash VLM",
-                    "active_prompt_template": "HEVI_VLM_INGEST_v2.0",
-                    "temperature": 0.2
-                };
-                
-                ingressLogOutput.innerHTML = syntaxHighlightJson(analyzingLog);
+                executeVLMProcess(target, false);
             }, 1200);
+        });
 
-            // Phase 3: HEVI Calculation and Verification after 3000ms
+        // Unified VLM Inference & HEVI Evaluation Simulator
+        function executeVLMProcess(target, isSynced = false) {
+            btnSubmitAssessment.textContent = "Analyzing with Gemini VLM...";
+            
+            const analyzingLog = {
+                "event": "VLM_MODEL_PROCESSING",
+                "status": "EXECUTING_INFERENCE_PIPELINE",
+                "timestamp": new Date().toISOString(),
+                "vlm_model": "Gemini 3.5 Flash VLM",
+                "active_prompt_template": "HEVI_VLM_INGEST_v2.0",
+                "temperature": 0.2
+            };
+            
+            ingressLogOutput.innerHTML = syntaxHighlightJson(analyzingLog);
+
+            // Phase 3: HEVI Calculation and Verification after 1800ms
             setTimeout(() => {
-                btnSubmitAssessment.textContent = "Assessment Verified!";
+                btnSubmitAssessment.textContent = isSynced ? "Sync Verified!" : "Assessment Verified!";
                 btnSubmitAssessment.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
                 
-                // Let's generate a severe condition so it highlights the VLM output!
-                // We'll update the sliders dynamically based on target select:
                 let VlmOutputs = {
                     "roofing_degradation": parseFloat(roofSlider.value),
                     "water_vulnerability": parseFloat(waterSlider.value),
@@ -586,28 +627,55 @@ contract AstraeaGrantEscrowVault {
                     "floor_vulnerability": parseFloat(floorSlider.value)
                 };
                 
+                // US Retailer MCC Lock configuration based on target
+                let merchantData = {};
                 if (target === 'roofing') {
                     VlmOutputs.roofing_degradation = 0.92;
                     roofSlider.value = 0.92;
+                    merchantData = {
+                        "merchant_name": "Lowe's Home Improvement Outlets",
+                        "merchant_category_code_mcc": 5211,
+                        "mcc_description": "Lumber and Building Materials Outlets",
+                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                    };
                 } else if (target === 'water') {
                     VlmOutputs.water_vulnerability = 0.88;
                     waterSlider.value = 0.88;
+                    merchantData = {
+                        "merchant_name": "The Home Depot",
+                        "merchant_category_code_mcc": 5251,
+                        "mcc_description": "Hardware Stores",
+                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                    };
                 } else if (target === 'latrine') {
                     VlmOutputs.latrine_vulnerability = 1.0; // none
                     latrineSelect.value = 'none';
+                    merchantData = {
+                        "merchant_name": "The Home Depot",
+                        "merchant_category_code_mcc": 5251,
+                        "mcc_description": "Hardware Stores",
+                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                    };
                 } else if (target === 'flooring') {
                     VlmOutputs.floor_vulnerability = 0.94;
                     floorSlider.value = 0.94;
+                    merchantData = {
+                        "merchant_name": "Lowe's Home Improvement Outlets",
+                        "merchant_category_code_mcc": 5211,
+                        "mcc_description": "Lumber and Building Materials Outlets",
+                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                    };
                 }
                 
                 // Update the simulator display to match VLM output!
                 updateSimulation();
 
                 const completeLog = {
-                    "event": "INGEST_PIPELINE_COMPLETE",
+                    "event": isSynced ? "OFFLINE_SYNC_COMPLETE" : "INGEST_PIPELINE_COMPLETE",
                     "status": "HEVI_METRICS_EVALUATED",
                     "timestamp": new Date().toISOString(),
                     "extracted_vlm_metrics": VlmOutputs,
+                    "us_merchant_integration_audit": merchantData,
                     "blockchain_state": {
                         "contract_verified": true,
                         "grant_escrow_approved": true,
@@ -624,8 +692,58 @@ contract AstraeaGrantEscrowVault {
                     btnSubmitAssessment.style.background = "";
                 }, 4000);
 
+            }, 1800);
+        }
+
+        // Automatic Network Synchronization Listener
+        window.addEventListener('online', () => {
+            const cached = localStorage.getItem('cached_assessments');
+            if (!cached) return;
+
+            const assessment = JSON.parse(cached);
+            localStorage.removeItem('cached_assessments');
+
+            // Log network recovery and trigger sync process
+            ingressLogOutput.innerHTML = syntaxHighlightJson({
+                "event": "NETWORK_RECOVERED",
+                "status": "SYNC_TRIGGERED",
+                "timestamp": new Date().toISOString(),
+                "message": "Device re-connected. Syncing 1 buffered local assessment from localStorage...",
+                "payload_details": {
+                    "target_metric": assessment.target,
+                    "file_name": assessment.file_name,
+                    "buffered_since": assessment.buffered_timestamp
+                }
+            });
+
+            btnSubmitAssessment.disabled = true;
+            btnSubmitAssessment.textContent = "Syncing payload...";
+
+            setTimeout(() => {
+                btnSubmitAssessment.textContent = "Processing sync ingress...";
+                
+                ingressLogOutput.innerHTML = syntaxHighlightJson({
+                    "event": "SYNC_INGEST_INGRESS",
+                    "status": "QUEUED_FOR_VLM_HEVI_PIPELINE",
+                    "timestamp": new Date().toISOString(),
+                    "ipfs_cid": assessment.ipfs_cid,
+                    "anonymized_h3_index": assessment.spatial_anonymization.h3_index_level_8
+                });
+            }, 1200);
+
+            setTimeout(() => {
+                executeVLMProcess(assessment.target, true);
             }, 3000);
         });
+
+        // Register Service Worker for PWA Capability
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registered successfully with scope:', reg.scope))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            });
+        }
     </script>
 </body>
 </html>
