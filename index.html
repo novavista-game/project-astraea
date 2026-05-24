@@ -428,12 +428,7 @@ contract AstraeaGrantEscrowVault {
         // Initial run
         updateSimulation();
 
-        // Highlight initial log output
         const ingressLogOutput = document.getElementById('ingress-log-output');
-        ingressLogOutput.innerHTML = syntaxHighlightJson({
-            "status": "AWAITING_INPUT",
-            "message": "Upload a photo to view metadata variables..."
-        });
 
         // Mobile Camera Ingress Integration - Verified Options
         const cameraInput = document.getElementById('camera-input');
@@ -510,13 +505,13 @@ contract AstraeaGrantEscrowVault {
             const timestamp = new Date().toISOString();
             
             const metadata = {
-                "event": "FILE_SELECTED",
+                "event": file ? "FILE_SELECTED" : "AWAITING_INPUT",
                 "status": status,
                 "timestamp": timestamp,
                 "file_metadata": {
-                    "name": file ? file.name : "facade_capture.jpg",
-                    "size_bytes": file ? file.size : 2048576,
-                    "mime_type": file ? file.type : "image/jpeg"
+                    "name": file ? file.name : "No file selected",
+                    "size_bytes": file ? file.size : 0,
+                    "mime_type": file ? file.type : "None"
                 },
                 "spatial_anonymization": {
                     "h3_index_level_8": generateMockH3Index(),
@@ -532,10 +527,11 @@ contract AstraeaGrantEscrowVault {
 
         // Dropdown selection updates metadata log
         targetSelect.addEventListener('change', () => {
-            if (capturedFile) {
-                logIngressMetadata("INGEST_BUFFERED", capturedFile);
-            }
+            logIngressMetadata(capturedFile ? "INGEST_BUFFERED" : "AWAITING_INPUT", capturedFile);
         });
+
+        // Initialize display with default target selection
+        logIngressMetadata("AWAITING_INPUT", null);
 
         // Submit Assessment click handler
         btnSubmitAssessment.addEventListener('click', (e) => {
