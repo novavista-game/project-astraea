@@ -2368,7 +2368,23 @@ contract AstraeaGrantEscrowVault {
             hotspot.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const region = hotspot.getAttribute('data-region');
+                
+                // 1. Show the map detail card for the clicked region
                 showMapDetail(region);
+                
+                // 2. Automatically sync with the HEVI Simulator localization mode,
+                // which changes the site language, updates currency parameters, and recalculates scores.
+                const simSelect = document.getElementById('localizationMode');
+                if (simSelect && regionToVal[region]) {
+                    simSelect.value = regionToVal[region];
+                    simSelect.dispatchEvent(new Event('change'));
+                }
+                
+                // 3. Smooth scroll directly to the HEVI Simulator section
+                const simulatorSection = document.getElementById('simulator');
+                if (simulatorSection) {
+                    simulatorSection.scrollIntoView({ behavior: 'smooth' });
+                }
             });
         });
 
