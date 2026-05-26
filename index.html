@@ -1328,6 +1328,7 @@ contract AstraeaGrantEscrowVault {
             }
         }
 
+        let selectedMapRegion = null;
         let lastGeneratedId = null;
         const roofSlider = document.getElementById('roof-slider');
         const waterSlider = document.getElementById('water-slider');
@@ -2331,7 +2332,7 @@ contract AstraeaGrantEscrowVault {
         const mapCardClose = document.getElementById('map-card-close');
         const btnMapApply = document.getElementById('btn-map-apply');
         
-        let selectedMapRegion = null;
+
 
         function showMapDetail(region) {
             const config = mapRegionConfigs[region];
