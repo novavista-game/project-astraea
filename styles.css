@@ -1145,3 +1145,241 @@ textarea.form-control {
     color: var(--text-white);
 }
 
+/* Interactive Global Map Styles */
+.map-section {
+    padding: 7rem 0;
+    background: var(--bg-deep);
+    border-top: 1px solid var(--border-color);
+}
+
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 2rem auto 0 auto;
+    border: 1px solid var(--border-color);
+    background: rgba(15, 23, 42, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 242, 254, 0.05);
+    overflow: hidden;
+}
+
+.world-map-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.map-continent {
+    fill: rgba(255, 255, 255, 0.03);
+    stroke: rgba(0, 242, 254, 0.1);
+    stroke-width: 1.5;
+    transition: all 0.3s ease;
+}
+
+.map-continent:hover {
+    fill: rgba(0, 242, 254, 0.03);
+    stroke: rgba(0, 242, 254, 0.25);
+}
+
+.network-route {
+    fill: none;
+    stroke: rgba(0, 242, 254, 0.15);
+    stroke-width: 1;
+    stroke-dasharray: 4, 4;
+    animation: dashRoute 30s linear infinite;
+}
+
+@keyframes dashRoute {
+    to {
+        stroke-dashoffset: -40;
+    }
+}
+
+/* Pulsing Hotspots */
+.map-hotspot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hotspot-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--primary);
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 0 10px var(--primary);
+}
+
+.hotspot-ring {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    animation: pulse-ring 2.5s infinite ease-out;
+    opacity: 0;
+    z-index: 1;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+}
+
+.hotspot-label {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid var(--border-color);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    color: var(--text-white);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.map-hotspot:hover .hotspot-label {
+    opacity: 1;
+    border-color: var(--primary);
+}
+
+.map-hotspot:hover .hotspot-dot {
+    background: var(--warning);
+    box-shadow: 0 0 15px var(--warning);
+}
+
+.map-hotspot:hover .hotspot-ring {
+    border-color: var(--warning);
+}
+
+/* Glassmorphic Fund Card Overlay */
+.map-detail-card {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 320px;
+    padding: 1.5rem;
+    z-index: 20;
+    transform: translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}
+
+.map-detail-card.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.card-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--text-gray);
+    transition: color 0.2s ease;
+}
+
+.card-close-btn:hover {
+    color: var(--text-white);
+}
+
+.card-flag-badge {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-title-lg {
+    font-size: 1.25rem;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text-white);
+    margin-bottom: 1rem;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.5rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.82rem;
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
+}
+
+.detail-label {
+    color: var(--text-gray);
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.detail-value {
+    color: var(--text-white);
+    font-weight: 600;
+    text-align: right;
+    max-width: 190px;
+}
+
+.text-glow-gold {
+    color: var(--warning);
+    text-shadow: 0 0 8px rgba(255, 183, 3, 0.25);
+}
+
+.text-glow-cyan {
+    color: var(--primary);
+    text-shadow: 0 0 8px rgba(0, 242, 254, 0.25);
+}
+
+.code-text {
+    font-family: monospace;
+    font-size: 0.72rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 4px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .map-detail-card {
+        position: static;
+        width: 100%;
+        margin-top: 1rem;
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
+        border-radius: 0 0 12px 12px;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+    }
+    
+    .card-close-btn {
+        display: none;
+    }
+}
+
