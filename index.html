@@ -330,6 +330,9 @@ contract AstraeaGrantEscrowVault {
                         <label for="intake-location">Pilot Location Network</label>
                         <select id="intake-location" class="form-control">
                             <option value="US" selected>United States Pilot Network (USD Escrow Routing)</option>
+                            <option value="KE">Kenya Pilot Network (KES Escrow Routing)</option>
+                            <option value="VN">Vietnam Pilot Network (VND Escrow Routing)</option>
+                            <option value="IN">India Pilot Network (INR Escrow Routing)</option>
                             <option value="KR">South Korea Pilot Network (KRW Escrow Routing)</option>
                         </select>
                     </div>
@@ -774,9 +777,11 @@ contract AstraeaGrantEscrowVault {
             btnSubmitAssessment.disabled = true;
             btnSubmitAssessment.textContent = "Uploading to IPFS...";
             
-            const isKorea = document.getElementById('localizationMode').value === 'korea';
-            const randomId = "AST-" + (isKorea ? "KR" : "US") + "-" + Math.floor(1000 + Math.random() * 9000);
-            saveTrackingState(randomId, target, 1, isKorea ? "KR" : "US");
+            const localeStr = document.getElementById('localizationMode').value;
+            const regionMap = { "usa": "US", "kenya": "KE", "vietnam": "VN", "india": "IN", "korea": "KR" };
+            const regionCode = regionMap[localeStr] || "US";
+            const randomId = "AST-" + regionCode + "-" + Math.floor(1000 + Math.random() * 9000);
+            saveTrackingState(randomId, target, 1, regionCode);
             lastGeneratedId = randomId;
 
             const banner = document.getElementById('tracking-gen-banner');
@@ -832,77 +837,33 @@ contract AstraeaGrantEscrowVault {
                 
                 // Merchant and category code configuration based on target and mode
                 let merchantData = {};
-                const isKorea = document.getElementById('localizationMode').value === 'korea';
-                
+                const localeStr = document.getElementById('localizationMode').value;
+                const regionMap = { "usa": "US", "kenya": "KE", "vietnam": "VN", "india": "IN", "korea": "KR" };
+                const regionCode = regionMap[localeStr] || "US";
+                const config = regionConfigs[regionCode];
+                const merchantConfig = config.mccMerchants[target] || config.mccMerchants["roofing"];
+
+                merchantData = {
+                    "merchant_name": merchantConfig.name,
+                    "merchant_category_code_mcc": merchantConfig.mcc,
+                    "mcc_description": `${merchantConfig.desc} (${config.agency} Audited)`,
+                    "status": "FUNDS_LOCKED_MCC_COMPLIANT"
+                };
+
                 if (target === 'roofing') {
                     VlmOutputs.roofing_degradation = 0.92;
                     roofSlider.value = 0.92;
-                    merchantData = isKorea ? {
-                        "merchant_name": "LX Hausys Building Materials Co.",
-                        "merchant_category_code_mcc": 5211,
-                        "mcc_description": "Lumber and Building Materials Outlets (KOICA Audited)",
-                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
-                    } : {
-                        "merchant_name": "Lowe's Home Improvement Outlets",
-                        "merchant_category_code_mcc": 5211,
-                        "mcc_description": "Lumber and Building Materials Outlets",
-                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
-                    };
                 } else if (target === 'water') {
                     VlmOutputs.water_vulnerability = 0.88;
                     waterSlider.value = 0.88;
-                    merchantData = isKorea ? {
-                        "merchant_name": "HomePlus General Merchandise",
-                        "merchant_category_code_mcc": 5311,
-                        "mcc_description": "General Hardware / Merchandise (KOICA Audited)",
-                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
-                    } : {
-                        "merchant_name": "The Home Depot",
-                        "merchant_category_code_mcc": 5251,
-                        "mcc_description": "Hardware Stores",
-                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
-                    };
                 } else if (target === 'latrine') {
                     VlmOutputs.latrine_vulnerability = 1.0; // none
                     latrineSelect.value = 'none';
-                    merchantData = isKorea ? {
-                        "merchant_name": "HomePlus General Merchandise",
-                        "merchant_category_code_mcc": 5311,
-                        "mcc_description": "General Hardware / Merchandise (KOICA Audited)",
-                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
-                    } : {
-                        "merchant_name": "The Home Depot",
-                        "merchant_category_code_mcc": 5251,
-                        "mcc_description": "Hardware Stores",
-                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
-                    };
                 } else if (target === 'flooring') {
                     VlmOutputs.floor_vulnerability = 0.94;
                     floorSlider.value = 0.94;
-                    merchantData = isKorea ? {
-                        "merchant_name": "LX Hausys Premium Paving",
-                        "merchant_category_code_mcc": 5211,
-                        "mcc_description": "Lumber and Building Materials Outlets (KOICA Audited)",
-                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
-                    } : {
-                        "merchant_name": "Lowe's Home Improvement Outlets",
-                        "merchant_category_code_mcc": 5211,
-                        "mcc_description": "Lumber and Building Materials Outlets",
-                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
-                    };
                 } else if (target === 'kitchen') {
                     VlmOutputs.kitchen_hazard_index = 0.85;
-                    merchantData = isKorea ? {
-                        "merchant_name": "HomePlus Kitchen Appliances",
-                        "merchant_category_code_mcc": 5732,
-                        "mcc_description": "Electronic Stores / Kitchen Appliances (KOICA Audited)",
-                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
-                    } : {
-                        "merchant_name": "The Home Depot",
-                        "merchant_category_code_mcc": 5732,
-                        "mcc_description": "Electronic Stores / Kitchen Appliances",
-                        "status": "FUNDS_LOCKED_MCC_COMPLIANT"
-                    };
                 }
                 
                 // Update the simulator display to match VLM output!
@@ -924,8 +885,7 @@ contract AstraeaGrantEscrowVault {
                 ingressLogOutput.innerHTML = syntaxHighlightJson(completeLog);
 
                 if (lastGeneratedId) {
-                    const isKorea = document.getElementById('localizationMode').value === 'korea';
-                    saveTrackingState(lastGeneratedId, target, 4, isKorea ? "KR" : "US");
+                    saveTrackingState(lastGeneratedId, target, 4, regionCode);
                 }
 
                 // Reset button state after a delay
@@ -946,9 +906,11 @@ contract AstraeaGrantEscrowVault {
             const assessment = JSON.parse(cached);
             localStorage.removeItem('cached_assessments');
 
-            const isKorea = document.getElementById('localizationMode').value === 'korea';
-            const randomId = "AST-" + (isKorea ? "KR" : "US") + "-" + Math.floor(1000 + Math.random() * 9000);
-            saveTrackingState(randomId, assessment.target, 1, isKorea ? "KR" : "US");
+            const localeStr = document.getElementById('localizationMode').value;
+            const regionMap = { "usa": "US", "kenya": "KE", "vietnam": "VN", "india": "IN", "korea": "KR" };
+            const regionCode = regionMap[localeStr] || "US";
+            const randomId = "AST-" + regionCode + "-" + Math.floor(1000 + Math.random() * 9000);
+            saveTrackingState(randomId, assessment.target, 1, regionCode);
             lastGeneratedId = randomId;
 
             const banner = document.getElementById('tracking-gen-banner');
@@ -999,6 +961,84 @@ contract AstraeaGrantEscrowVault {
         const trackingDetailDesc = document.getElementById('tracking-detail-desc');
 
         const TRACKING_DB_KEY = 'astraea_tracking_db';
+
+        const regionConfigs = {
+            "US": {
+                name: "United States",
+                currency: "USDC",
+                symbol: "$",
+                rate: 1.0,
+                location: "Detroit, Michigan, USA",
+                agency: "UN-Habitat",
+                mccMerchants: {
+                    "roofing": { name: "Lowe's Home Improvement Outlets", mcc: 5211, desc: "Lumber and Building Materials Outlets" },
+                    "water": { name: "The Home Depot", mcc: 5251, desc: "Hardware Stores" },
+                    "latrine": { name: "The Home Depot", mcc: 5251, desc: "Hardware Stores" },
+                    "flooring": { name: "Lowe's Home Improvement Outlets", mcc: 5211, desc: "Lumber and Building Materials Outlets" },
+                    "kitchen": { name: "The Home Depot", mcc: 5732, desc: "Electronic Stores / Kitchen Appliances" }
+                }
+            },
+            "KE": {
+                name: "Kenya",
+                currency: "KES",
+                symbol: "KSh ",
+                rate: 130.5,
+                location: "Kibera, Nairobi, Kenya",
+                agency: "UN-Habitat",
+                mccMerchants: {
+                    "roofing": { name: "Kibera Building & Timber Supply", mcc: 5211, desc: "Lumber and Building Materials" },
+                    "water": { name: "Nairobi Hardware Depot", mcc: 5251, desc: "Hardware and Plumbing Stores" },
+                    "latrine": { name: "Nairobi Hardware Depot", mcc: 5251, desc: "Hardware and Plumbing Stores" },
+                    "flooring": { name: "Kibera Building & Timber Supply", mcc: 5211, desc: "Lumber and Building Materials" },
+                    "kitchen": { name: "Nairobi Appliances Depot", mcc: 5732, desc: "Electronic Stores / Kitchen Appliances" }
+                }
+            },
+            "VN": {
+                name: "Vietnam",
+                currency: "VND",
+                symbol: "₫",
+                rate: 24500,
+                location: "Ho Chi Minh City, Vietnam",
+                agency: "UN-Habitat",
+                mccMerchants: {
+                    "roofing": { name: "Saigon Lumber Supplies", mcc: 5211, desc: "Lumber and Building Materials" },
+                    "water": { name: "Cho Lon Hardware Supplies", mcc: 5251, desc: "Hardware Stores" },
+                    "latrine": { name: "Cho Lon Hardware Supplies", mcc: 5251, desc: "Hardware Stores" },
+                    "flooring": { name: "Saigon Lumber Supplies", mcc: 5211, desc: "Lumber and Building Materials" },
+                    "kitchen": { name: "Cho Lon Home Appliances", mcc: 5732, desc: "Electronic Stores / Kitchen Appliances" }
+                }
+            },
+            "IN": {
+                name: "India",
+                currency: "INR",
+                symbol: "₹",
+                rate: 83.2,
+                location: "Dharavi, Mumbai, India",
+                agency: "UN-Habitat",
+                mccMerchants: {
+                    "roofing": { name: "Dharavi Construction Supplies", mcc: 5211, desc: "Lumber and Building Materials" },
+                    "water": { name: "Mumbai Hardware & Latrines", mcc: 5251, desc: "Hardware and Plumbing Stores" },
+                    "latrine": { name: "Mumbai Hardware & Latrines", mcc: 5251, desc: "Hardware and Plumbing Stores" },
+                    "flooring": { name: "Dharavi Construction Supplies", mcc: 5211, desc: "Lumber and Building Materials" },
+                    "kitchen": { name: "Mumbai Home Appliances", mcc: 5732, desc: "Electronic Stores / Kitchen Appliances" }
+                }
+            },
+            "KR": {
+                name: "South Korea",
+                currency: "KRW",
+                symbol: "₩",
+                rate: 1340,
+                location: "Songpa-gu, Seoul, South Korea",
+                agency: "KOICA",
+                mccMerchants: {
+                    "roofing": { name: "LX Hausys Building Materials Co.", mcc: 5211, desc: "Lumber and Building Materials Outlets" },
+                    "water": { name: "HomePlus General Merchandise", mcc: 5311, desc: "General Hardware / Merchandise Outlets" },
+                    "latrine": { name: "HomePlus General Merchandise", mcc: 5311, desc: "General Hardware / Merchandise Outlets" },
+                    "flooring": { name: "LX Hausys Premium Paving", mcc: 5211, desc: "Lumber and Building Materials Outlets" },
+                    "kitchen": { name: "HomePlus Kitchen Appliances", mcc: 5732, desc: "Electronic Stores / Kitchen Appliances Outlets" }
+                }
+            }
+        };
 
         function initTrackingDB() {
             let db = localStorage.getItem(TRACKING_DB_KEY);
@@ -1103,52 +1143,21 @@ contract AstraeaGrantEscrowVault {
         }
 
         function getFinalStepDetails(target, region) {
-            const isKorea = (region === 'KR');
-            let description = "";
-            let logMessage = "";
-
-            if (isKorea) {
-                if (target === 'roofing') {
-                    description = "Escrow release verified. Funds of ₩2,010,000 KRW locked in KOICA-audited vault for LX Hausys Building Materials (MCC 5211 Compliance).";
-                    logMessage = "Grant matching complete. Escrow release verified for LX Hausys (Building Materials MCC 5211). KOICA-resilience compliance check passed.";
-                } else if (target === 'water') {
-                    description = "Escrow release verified. Funds locked in KOICA-audited vault for HomePlus General Merchandise (MCC 5311 Compliance).";
-                    logMessage = "Grant matching complete. Escrow release verified for HomePlus (General Hardware MCC 5311). KOICA compliance check passed.";
-                } else if (target === 'latrine') {
-                    description = "Escrow release verified. Funds locked in KOICA-audited vault for HomePlus Sanitary Upgrades (MCC 5311 Compliance).";
-                    logMessage = "Grant matching complete. Escrow release verified for HomePlus (General Hardware MCC 5311). KOICA compliance check passed.";
-                } else if (target === 'flooring') {
-                    description = "Escrow release verified. Funds locked in KOICA-audited vault for LX Hausys Premium Paving (MCC 5211 Compliance).";
-                    logMessage = "Grant matching complete. Escrow release verified for LX Hausys (Building Materials MCC 5211). KOICA compliance check passed.";
-                } else if (target === 'kitchen') {
-                    description = "Escrow release verified. Funds locked in KOICA-audited vault for HomePlus Kitchen Appliances (MCC 5732 Compliance).";
-                    logMessage = "Grant matching complete. Escrow release verified for HomePlus (Kitchen Appliances MCC 5732). KOICA compliance check passed.";
-                }
-            } else {
-                if (target === 'roofing') {
-                    description = "Escrow release verified. Funds of $1,500 USDC locked in UN-Habitat vault for Lowe's Home Improvement (MCC 5211 Compliance).";
-                    logMessage = "Grant matching complete. Escrow release verified for Lowe's (Building Materials MCC 5211). UN-Habitat resilience check passed.";
-                } else if (target === 'water') {
-                    description = "Escrow release verified. Funds of $1,500 USDC locked in UN-Habitat vault for The Home Depot (MCC 5251 Compliance).";
-                    logMessage = "Grant matching complete. Escrow release verified for The Home Depot (Hardware Stores MCC 5251). UN-Habitat check passed.";
-                } else if (target === 'latrine') {
-                    description = "Escrow release verified. Funds of $1,500 USDC locked in UN-Habitat vault for The Home Depot Sanitary Upgrades (MCC 5251 Compliance).";
-                    logMessage = "Grant matching complete. Escrow release verified for The Home Depot (Hardware Stores MCC 5251). UN-Habitat check passed.";
-                } else if (target === 'flooring') {
-                    description = "Escrow release verified. Funds of $1,500 USDC locked in UN-Habitat vault for Lowe's Home Improvement (MCC 5211 Compliance).";
-                    logMessage = "Grant matching complete. Escrow release verified for Lowe's (Building Materials MCC 5211). UN-Habitat check passed.";
-                } else if (target === 'kitchen') {
-                    description = "Escrow release verified. Funds of $1,500 USDC locked in UN-Habitat vault for The Home Depot (MCC 5732 Compliance).";
-                    logMessage = "Grant matching complete. Escrow release verified for The Home Depot (Kitchen Appliances MCC 5732). UN-Habitat check passed.";
-                }
-            }
+            const config = regionConfigs[region] || regionConfigs["US"];
+            const baseUSD = 1500;
+            const localAmount = baseUSD * config.rate;
+            const formattedAmount = `${config.symbol}${localAmount.toLocaleString()} ${config.currency}`;
+            const merchant = config.mccMerchants[target] || config.mccMerchants["roofing"];
+            
+            const description = `Escrow release verified. Funds of ${formattedAmount} locked in ${config.agency}-audited vault for ${merchant.name} (MCC ${merchant.mcc} Compliance).`;
+            const logMessage = `Grant matching complete. Escrow release verified for ${merchant.name} (${merchant.desc} MCC ${merchant.mcc}). ${config.agency}-resilience compliance check passed.`;
 
             return { description, logMessage };
         }
 
         function logTrackingEvent(id, step, target, region, message) {
             const stepNames = ["Submitted", "VLM Analysis", "Grant Matching", "Agency Audit", "Funds Locked"];
-            const isKorea = (region === 'KR');
+            const config = regionConfigs[region] || regionConfigs["US"];
             
             const logData = {
                 "event": "TRACKING_STATE_UPDATE",
@@ -1157,7 +1166,7 @@ contract AstraeaGrantEscrowVault {
                 "current_pipeline_step": stepNames[step],
                 "step_index": step,
                 "inspection_target": target,
-                "region_context": isKorea ? "Songpa-gu, Seoul, South Korea" : "Kibera, Nairobi, Kenya",
+                "region_context": config.location,
                 "pipeline_status": step === 4 ? "COMPLETE" : "IN_PROGRESS",
                 "system_message": message
             };
@@ -1287,16 +1296,12 @@ contract AstraeaGrantEscrowVault {
                     complianceStatus = "COMPLIANCE_STATUS: PRIORITIZED_ACCESSIBILITY_UPGRADE";
                 }
                 
-                const isKorea = (location === 'KR');
-                const merchantApproval = isKorea ? {
-                    "merchant_name": "LX Hausys Building Materials Co.",
-                    "merchant_category_code_mcc": 5211,
-                    "mcc_description": "Lumber and Building Materials Outlets (KOICA Audited)",
-                    "status": "APPROVED_FUNDS_LOCKED_PENDING_VLM"
-                } : {
-                    "merchant_name": "Lowe's Home Improvement Outlets",
-                    "merchant_category_code_mcc": 5211,
-                    "mcc_description": "Lumber and Building Materials Outlets",
+                const config = regionConfigs[location] || regionConfigs["US"];
+                const merchantConfig = config.mccMerchants["roofing"]; // Default to roofing for initial submit approval
+                const merchantApproval = {
+                    "merchant_name": merchantConfig.name,
+                    "merchant_category_code_mcc": merchantConfig.mcc,
+                    "mcc_description": `${merchantConfig.desc} (${config.agency} Audited)`,
                     "status": "APPROVED_FUNDS_LOCKED_PENDING_VLM"
                 };
                 
@@ -1309,7 +1314,7 @@ contract AstraeaGrantEscrowVault {
                     "applicant_context_window": {
                         "typed_name": name,
                         "email": email,
-                        "selected_location": isKorea ? "South Korea Pilot Program" : "US Pilot Program",
+                        "selected_location": `${config.name} Pilot Program`,
                         "statement_of_intent": intent,
                         "health_outcomes_expectation": health,
                         "special_accessibility_needs": accessibility
