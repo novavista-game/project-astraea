@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body class="dark-mode">
     <header class="navbar" id="navbar">
@@ -403,8 +404,13 @@ contract AstraeaGrantEscrowVault {
                         Submit to VLM Pipeline
                     </button>
                     
-                    <div id="tracking-gen-banner" style="display: none; margin-top: 1rem; background: rgba(0, 242, 254, 0.08); border: 1px dashed var(--primary); padding: 0.8rem; border-radius: 6px; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif; text-align: center;">
-                        🎉 Tracking ID Generated: <strong id="generated-id-text" class="text-glow">AST-US-1024</strong>. Copy it to track status below.
+                    <div id="tracking-gen-banner" style="display: none; margin-top: 1rem; background: rgba(0, 242, 254, 0.08); border: 1px dashed var(--primary); padding: 1.2rem; border-radius: 6px; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif; text-align: center;">
+                        <div style="margin-bottom: 0.8rem;">
+                            🎉 <span data-i18n="tracking_id_banner_prefix">Tracking ID Generated: </span><strong id="generated-id-text" class="text-glow">AST-US-1024</strong><span data-i18n="tracking_id_banner_suffix">. Copy it to track status below.</span>
+                        </div>
+                        <button class="btn btn-secondary btn-small" id="btn-download-pdf" style="margin: 0.8rem auto 0 auto; display: none; align-items: center; gap: 0.5rem;">
+                            📥 Download Generated PDF Application
+                        </button>
                     </div>
                 </div>
 
@@ -724,7 +730,8 @@ contract AstraeaGrantEscrowVault {
                 "btn_offline_buffered": "Waiting for Connection (Buffered)...",
                 "sim_allocated_grant": "Allocated Grant: {amount} USDC",
                 "sim_equivalent": "({local} equivalent)",
-                "sim_postponed": "Vulnerability Low - Upgrades Postponed"
+                "sim_postponed": "Vulnerability Low - Upgrades Postponed",
+                "btn_processing_efile": "Processing E-File..."
             },
             "ko": {
                 "nav_mission": "미션",
@@ -886,7 +893,8 @@ contract AstraeaGrantEscrowVault {
                 "btn_offline_buffered": "인터넷 연결 대기 중 (버퍼링됨)...",
                 "sim_allocated_grant": "할당된 지원금: {amount} USDC",
                 "sim_equivalent": "({local} 상당)",
-                "sim_postponed": "취약성 낮음 - 주거 개선 보류됨"
+                "sim_postponed": "취약성 낮음 - 주거 개선 보류됨",
+                "btn_processing_efile": "전자파일 처리 및 전송 중..."
             },
             "sw": {
                 "nav_mission": "Mission",
@@ -1028,7 +1036,8 @@ contract AstraeaGrantEscrowVault {
                 "btn_offline_buffered": "Inasubiri Muunganisho (Imehifadhiwa)...",
                 "sim_allocated_grant": "Ruzuku Iliyotengwa: {amount} USDC",
                 "sim_equivalent": "({local} sawa na)",
-                "sim_postponed": "Uhatarishi mdogo - Maboresho yameahirishwa"
+                "sim_postponed": "Uhatarishi mdogo - Maboresho yameahirishwa",
+                "btn_processing_efile": "Kusindika E-File..."
             },
             "vi": {
                 "nav_mission": "Nhiệm vụ",
@@ -1149,7 +1158,8 @@ contract AstraeaGrantEscrowVault {
                 "btn_offline_buffered": "Đang chờ kết nối (Đã đệm)...",
                 "sim_allocated_grant": "Khoản Tài Trợ Được Phân Bổ: {amount} USDC",
                 "sim_equivalent": "(tương đương {local})",
-                "sim_postponed": "Độ dễ tổn thương thấp - Trì hoãn nâng cấp"
+                "sim_postponed": "Độ dễ tổn thương thấp - Trì hoãn nâng cấp",
+                "btn_processing_efile": "Đang xử lý E-File..."
             },
             "hi": {
                 "nav_mission": "मिशन",
@@ -1270,7 +1280,8 @@ contract AstraeaGrantEscrowVault {
                 "btn_offline_buffered": "कनेक्शन की प्रतीक्षा है (बफर किया गया)...",
                 "sim_allocated_grant": "आवंटित अनुदान: {amount} USDC",
                 "sim_equivalent": "({local} के बराबर)",
-                "sim_postponed": "संवेदनशीलता कम - उन्नयन स्थगित"
+                "sim_postponed": "संवेदनशीलता कम - उन्नयन स्थगित",
+                "btn_processing_efile": "ई-फ़ाइल संसाधित हो रही है..."
             }
         };
 
@@ -1330,6 +1341,102 @@ contract AstraeaGrantEscrowVault {
 
         let selectedMapRegion = null;
         let lastGeneratedId = null;
+        let currentApplicationData = null;
+
+        function generateApplicationPDF(data) {
+            if (!data) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Set styles & branding slate background
+            doc.setFillColor(15, 23, 42); 
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(0, 242, 254); // Cyan primary
+            doc.setFontSize(22);
+            doc.text("PROJECT ASTRAEA", 14, 23);
+            
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(9);
+            doc.text("B2G PUBLIC GRANT ALLOCATION & VERIFICATION INFRASTRUCTURE", 14, 31);
+            
+            // Section 1: Applicant Information
+            doc.setTextColor(15, 23, 42);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(13);
+            doc.text("1. APPLICANT INFORMATION", 14, 52);
+            
+            doc.setDrawColor(0, 242, 254);
+            doc.setLineWidth(0.5);
+            doc.line(14, 55, 196, 55);
+            
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            
+            let y = 63;
+            const addField = (label, val, isFixedFont = false) => {
+                doc.setFont("helvetica", "bold");
+                doc.text(`${label}:`, 14, y);
+                
+                if (isFixedFont) {
+                    doc.setFont("courier", "bold");
+                } else {
+                    doc.setFont("helvetica", "normal");
+                }
+                
+                const splitVal = doc.splitTextToSize(val || "N/A", 130);
+                doc.text(splitVal, 62, y);
+                y += (splitVal.length * 5) + 3;
+            };
+            
+            addField("Application ID", data.trackingId, true);
+            addField("Full Name", data.name);
+            addField("Email Address", data.email);
+            addField("Selected Location", data.locationName);
+            addField("Date Submitted", data.timestamp);
+            
+            addField("Statement of Intent", data.intent);
+            addField("Health & Impact Expectation", data.health);
+            addField("Special Accessibility Needs", data.accessibility || "None");
+            
+            // Section 2: Technical Ingress Data
+            y += 4;
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(13);
+            doc.text("2. TECHNICAL INGRESS VERIFICATION", 14, y);
+            y += 2;
+            doc.line(14, y, 196, y);
+            y += 7;
+            
+            addField("Spatial Obfuscation (H3 Res 8)", data.h3Index, true);
+            addField("zk-SNARK Containment Hash", data.zkpHash, true);
+            addField("VLM Model Target", "Gemini 3.5 Flash VLM");
+            addField("Compliance Status", data.complianceStatus);
+            
+            // Section 3: Escrow & Supplier Routing
+            y += 4;
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(13);
+            doc.text("3. ESCROW & SUPPLIER ROUTING", 14, y);
+            y += 2;
+            doc.line(14, y, 196, y);
+            y += 7;
+            
+            addField("Authorized Merchant", data.merchantName);
+            addField("Merchant Category (MCC)", data.mccCode);
+            addField("Auditing Agency Partner", data.agency);
+            addField("Milestone Escrow Vault", data.escrowAddress, true);
+            
+            // Footer notice
+            doc.setFont("helvetica", "italic");
+            doc.setFontSize(8);
+            doc.text("This document is generated by Project Astraea. Spatial coordinates have been obfuscated to preserve safety and privacy.", 14, 285);
+            
+            // Trigger PDF Download
+            doc.save(`Astraea_Application_${data.trackingId}.pdf`);
+        }
         const roofSlider = document.getElementById('roof-slider');
         const waterSlider = document.getElementById('water-slider');
         const latrineSelect = document.getElementById('latrine-select');
@@ -2220,12 +2327,19 @@ contract AstraeaGrantEscrowVault {
                     return;
                 }
                 
+                // Disable form inputs and submit button during E-File simulation
+                const inputs = document.querySelectorAll('#application-form .form-control');
+                inputs.forEach(input => input.disabled = true);
+                btnSubmitApplication.disabled = true;
+                btnSubmitApplication.textContent = getTranslation('btn_processing_efile') || "Processing E-File...";
+                
+                // Reset/Hide download button on new submission
+                const downloadBtn = document.getElementById('btn-download-pdf');
+                if (downloadBtn) downloadBtn.style.display = 'none';
+                
                 // Generate a localized tracking ID based on selection
                 const trackingId = "AST-" + location + "-" + Math.floor(1000 + Math.random() * 9000);
-                
-                // Store in tracking DB at step 0 (Submitted)
-                saveTrackingState(trackingId, 'roofing', 0, location);
-                lastGeneratedId = trackingId;
+                const timestamp = new Date().toISOString();
                 
                 // Scan fields for accessibility keywords
                 const textToCheck = (name + " " + intent + " " + health + " " + accessibility).toLowerCase();
@@ -2237,6 +2351,7 @@ contract AstraeaGrantEscrowVault {
                 }
                 
                 const config = regionConfigs[location] || regionConfigs["US"];
+                const mapConfig = mapRegionConfigs[location] || { escrow: "0x8e2b1001f...e7e_US" };
                 const merchantConfig = config.mccMerchants["roofing"]; // Default to roofing for initial submit approval
                 const merchantApproval = {
                     "merchant_name": merchantConfig.name,
@@ -2245,36 +2360,152 @@ contract AstraeaGrantEscrowVault {
                     "status": "APPROVED_FUNDS_LOCKED_PENDING_VLM"
                 };
                 
-                // Output structured logs to the Ingress Event Logger
-                const logPayload = {
-                    "event": "APPLICATION_SUBMITTED",
-                    "status": complianceStatus,
-                    "timestamp": new Date().toISOString(),
-                    "tracking_id": trackingId,
-                    "applicant_context_window": {
-                        "typed_name": name,
-                        "email": email,
-                        "selected_location": `${config.name} Pilot Program`,
-                        "statement_of_intent": intent,
-                        "health_outcomes_expectation": health,
-                        "special_accessibility_needs": accessibility
-                    },
-                    "merchant_category_approvals": merchantApproval
+                // Populate global currentApplicationData for PDF compilation
+                currentApplicationData = {
+                    trackingId,
+                    name,
+                    email,
+                    locationName: `${config.name} Pilot Program`,
+                    timestamp,
+                    intent,
+                    health,
+                    accessibility,
+                    h3Index: location === 'KR' ? "8830e07a21fffff" : generateMockH3Index(),
+                    zkpHash: "0x3f5c9e2d" + Math.floor(Math.random() * 100000000).toString(16) + "e4a1b",
+                    complianceStatus,
+                    merchantName: merchantConfig.name,
+                    mccCode: `${merchantConfig.mcc} (${merchantConfig.desc})`,
+                    agency: config.agency,
+                    escrowAddress: mapConfig.escrow
                 };
                 
-                ingressLogOutput.innerHTML = syntaxHighlightJson(logPayload);
+                // Smooth scroll to the logger terminal to watch simulation
+                const logPanel = document.getElementById('upload-log-panel');
+                if (logPanel) {
+                    logPanel.scrollIntoView({ behavior: 'smooth' });
+                }
                 
-                // Display tracking generation banner
-                const banner = document.getElementById('tracking-gen-banner');
-                const bannerText = document.getElementById('generated-id-text');
-                bannerText.textContent = trackingId;
-                banner.style.display = 'block';
+                // --- Step-by-Step E-File Simulation Pipeline ---
                 
-                // Scroll to tracking section
-                document.getElementById('tracking').scrollIntoView({ behavior: 'smooth' });
+                // Step 0: E-File Packaging Initiated (0ms)
+                ingressLogOutput.innerHTML = syntaxHighlightJson({
+                    "event": "EFILE_INITIATED",
+                    "status": "PACKAGING_APPLICATION_DATA",
+                    "timestamp": timestamp,
+                    "tracking_id": trackingId,
+                    "message": "Gathering applicant context and visual HEVI audit telemetry for packaging..."
+                });
                 
-                // Set search input to the new ID for convenience
-                trackingInput.value = trackingId;
+                // Step 1: PDF Compilation in memory (1000ms)
+                setTimeout(() => {
+                    ingressLogOutput.innerHTML = syntaxHighlightJson({
+                        "event": "PDF_GENERATION_COMPLETE",
+                        "status": "COMPILING_GRANT_PDF",
+                        "timestamp": new Date().toISOString(),
+                        "message": "Successfully rendered official WAP/KOICA grant application PDF in-memory.",
+                        "output_file": `Astraea_Application_${trackingId}.pdf`,
+                        "file_size_estimated": "248 KB"
+                    });
+                }, 1000);
+                
+                // Step 2: Establish SFTP Handshake (2000ms)
+                setTimeout(() => {
+                    ingressLogOutput.innerHTML = syntaxHighlightJson({
+                        "event": "SFTP_HANDSHAKE",
+                        "status": "CONNECTING_TO_AGENCY_SERVER",
+                        "timestamp": new Date().toISOString(),
+                        "message": "Establishing secure SSH/SFTP connection to sftp.agency-mail-secure.gov using SSH private key...",
+                        "port": 22,
+                        "auth_mode": "SSH_KEY_PAIR"
+                    });
+                }, 2000);
+                
+                // Step 3: SFTP Upload (3000ms)
+                setTimeout(() => {
+                    ingressLogOutput.innerHTML = syntaxHighlightJson({
+                        "event": "SFTP_UPLOAD_SUCCESS",
+                        "status": "UPLOADING_EFILE_PDF",
+                        "timestamp": new Date().toISOString(),
+                        "message": `File Astraea_Application_${trackingId}.pdf successfully written to remote path /WAP_Applications/Pending/.`,
+                        "remote_host": "sftp.agency-mail-secure.gov",
+                        "write_bytes": 253952
+                    });
+                }, 3000);
+                
+                // Step 4: SMTP Notification Mail Dispatch (4000ms)
+                setTimeout(() => {
+                    ingressLogOutput.innerHTML = syntaxHighlightJson({
+                        "event": "SMTP_NOTIFY_SUCCESS",
+                        "status": "SENDING_SECURE_EMAIL_NOTIFICATION",
+                        "timestamp": new Date().toISOString(),
+                        "message": `TLS-secured SMTP message dispatched to wap-intake-officer@state.gov with PDF attachment.`,
+                        "recipient": "wap-intake-officer@state.gov",
+                        "mail_server": "smtp.agency-mail-secure.gov"
+                    });
+                }, 4000);
+                
+                // Step 5: Complete Submission and display Dashboard (4500ms)
+                setTimeout(() => {
+                    const logPayload = {
+                        "event": "APPLICATION_SUBMITTED",
+                        "status": complianceStatus,
+                        "timestamp": new Date().toISOString(),
+                        "tracking_id": trackingId,
+                        "applicant_context_window": {
+                            "typed_name": name,
+                            "email": email,
+                            "selected_location": `${config.name} Pilot Program`,
+                            "statement_of_intent": intent,
+                            "health_outcomes_expectation": health,
+                            "special_accessibility_needs": accessibility
+                        },
+                        "spatial_anonymization": {
+                            "h3_index_level_8": currentApplicationData.h3Index,
+                            "location_context": config.location,
+                            "zk_snark_proof_hash": currentApplicationData.zkpHash,
+                            "status": "ANONYMIZED_AND_VERIFIED"
+                        },
+                        "merchant_category_approvals": merchantApproval
+                    };
+                    
+                    ingressLogOutput.innerHTML = syntaxHighlightJson(logPayload);
+                    
+                    // Save in tracking DB at step 0 (Submitted)
+                    saveTrackingState(trackingId, 'roofing', 0, location);
+                    lastGeneratedId = trackingId;
+                    
+                    // Re-enable form fields
+                    inputs.forEach(input => input.disabled = false);
+                    btnSubmitApplication.disabled = false;
+                    btnSubmitApplication.textContent = getTranslation('btn_submit_application') || "Submit Application";
+                    
+                    // Display tracking generation banner
+                    const banner = document.getElementById('tracking-gen-banner');
+                    const bannerText = document.getElementById('generated-id-text');
+                    bannerText.textContent = trackingId;
+                    banner.style.display = 'block';
+                    
+                    // Display download PDF button
+                    const downloadBtn = document.getElementById('btn-download-pdf');
+                    if (downloadBtn) {
+                        downloadBtn.style.display = 'inline-flex';
+                    }
+                    
+                    // Set search input to the new ID for convenience
+                    trackingInput.value = trackingId;
+                    
+                    // Scroll to tracking section
+                    document.getElementById('tracking').scrollIntoView({ behavior: 'smooth' });
+                }, 4500);
+            });
+        }
+        
+        // PDF Download Click Handler
+        const btnDownloadPdf = document.getElementById('btn-download-pdf');
+        if (btnDownloadPdf) {
+            btnDownloadPdf.addEventListener('click', (e) => {
+                e.preventDefault();
+                generateApplicationPDF(currentApplicationData);
             });
         }
 
