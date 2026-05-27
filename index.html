@@ -465,8 +465,85 @@ contract AstraeaGrantEscrowVault {
                             <option value="KR" data-i18n="opt_pilot_kr">South Korea Pilot Network (KRW Escrow Routing)</option>
                         </select>
                     </div>
- 
-                    <div class="control-group" style="margin-top: 1rem;">
+
+                    <!-- Section 1: Grant Context -->
+                    <div style="margin-top: 1.5rem; margin-bottom: 0.8rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                        <h4 style="color: var(--primary); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em;">1. Grant Context</h4>
+                    </div>
+                    <div class="grid grid-2">
+                        <div class="control-group">
+                            <label for="intake-funding-agency" data-i18n="lbl_funding_agency">Target Funding Agency</label>
+                            <select id="intake-funding-agency" class="form-control" required>
+                                <option value="UN-Habitat" data-i18n="opt_agency_un">UN-Habitat</option>
+                                <option value="KOICA" data-i18n="opt_agency_koica">KOICA</option>
+                                <option value="Habitat for Humanity" data-i18n="opt_agency_hfh">Habitat for Humanity</option>
+                                <option value="International Red Cross" data-i18n="opt_agency_irc">International Red Cross</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="intake-program-type" data-i18n="lbl_program_type">Grant Program Type</label>
+                            <select id="intake-program-type" class="form-control" required>
+                                <option value="Emergency Housing Relief" data-i18n="opt_prog_emergency">Emergency Housing Relief</option>
+                                <option value="Urban Slum Regeneration" data-i18n="opt_prog_slum">Urban Slum Regeneration</option>
+                                <option value="Community Infrastructure Grant" data-i18n="opt_prog_infra">Community Infrastructure Grant</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Household Profile & Vulnerability -->
+                    <div style="margin-top: 1.5rem; margin-bottom: 0.8rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                        <h4 style="color: var(--primary); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em;">2. Household Profile & Vulnerability</h4>
+                    </div>
+                    <div class="grid grid-2">
+                        <div class="control-group">
+                            <label for="intake-household-size" data-i18n="lbl_household_size">Household Size (No. of occupants)</label>
+                            <input type="number" id="intake-household-size" min="1" placeholder="e.g. 4" class="form-control" required>
+                        </div>
+                        <div class="control-group">
+                            <label for="intake-dependents-count" data-i18n="lbl_dependents_count">Dependents Count (Children/Elderly/Disabled)</label>
+                            <input type="number" id="intake-dependents-count" min="0" placeholder="e.g. 2" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-2" style="margin-top: 1rem;">
+                        <div class="control-group">
+                            <label for="intake-monthly-income" data-i18n="lbl_monthly_income">Monthly Household Income (USD)</label>
+                            <input type="number" id="intake-monthly-income" min="0" placeholder="e.g. 350" class="form-control" required>
+                        </div>
+                        <div class="control-group">
+                            <label for="intake-housing-ownership" data-i18n="lbl_housing_ownership">Housing Ownership Form</label>
+                            <select id="intake-housing-ownership" class="form-control" required>
+                                <option value="Informal Settlement/Squatter" data-i18n="opt_own_informal">Informal Settlement/Squatter</option>
+                                <option value="Rented/Tenant" data-i18n="opt_own_rented">Rented/Tenant</option>
+                                <option value="Damaged Owner" data-i18n="opt_own_damaged">Damaged Owner</option>
+                                <option value="Displaced/Homeless" data-i18n="opt_own_displaced">Displaced/Homeless</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Project Budget & Routing -->
+                    <div style="margin-top: 1.5rem; margin-bottom: 0.8rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                        <h4 style="color: var(--primary); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em;">3. Project Budget & Routing</h4>
+                    </div>
+                    <div class="grid grid-3">
+                        <div class="control-group">
+                            <label for="intake-requested-amount" data-i18n="lbl_requested_amount">Requested Grant Amount (USD)</label>
+                            <input type="number" id="intake-requested-amount" min="1" placeholder="e.g. 1500" class="form-control" required>
+                        </div>
+                        <div class="control-group">
+                            <label for="intake-budget-materials" data-i18n="lbl_budget_materials">Budget for Materials (%)</label>
+                            <input type="number" id="intake-budget-materials" min="0" max="100" placeholder="e.g. 60" class="form-control" required>
+                        </div>
+                        <div class="control-group">
+                            <label for="intake-budget-labor" data-i18n="lbl_budget_labor">Budget for Labor/Other (%)</label>
+                            <input type="number" id="intake-budget-labor" min="0" max="100" placeholder="e.g. 40" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Qualitative Context -->
+                    <div style="margin-top: 1.5rem; margin-bottom: 0.8rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                        <h4 style="color: var(--primary); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em;">4. Qualitative Context</h4>
+                    </div>
+                    <div class="control-group">
                         <label for="intake-intent" data-i18n="lbl_statement_intent">Statement of Intent</label>
                         <textarea id="intake-intent" rows="3" placeholder="How do you intend to deploy these funds for your housing structure?" data-i18n="intake_intent_placeholder" class="form-control" required></textarea>
                     </div>
@@ -731,7 +808,27 @@ contract AstraeaGrantEscrowVault {
                 "sim_allocated_grant": "Allocated Grant: {amount} USDC",
                 "sim_equivalent": "({local} equivalent)",
                 "sim_postponed": "Vulnerability Low - Upgrades Postponed",
-                "btn_processing_efile": "Processing E-File..."
+                "btn_processing_efile": "Processing E-File...",
+                "lbl_funding_agency": "Target Funding Agency",
+                "lbl_program_type": "Grant Program Type",
+                "lbl_household_size": "Household Size (No. of occupants)",
+                "lbl_dependents_count": "Dependents Count (Children/Elderly/Disabled)",
+                "lbl_monthly_income": "Monthly Household Income (USD)",
+                "lbl_housing_ownership": "Housing Ownership Form",
+                "lbl_requested_amount": "Requested Grant Amount (USD)",
+                "lbl_budget_materials": "Budget for Materials (%)",
+                "lbl_budget_labor": "Budget for Labor/Other (%)",
+                "opt_agency_un": "UN-Habitat",
+                "opt_agency_koica": "KOICA",
+                "opt_agency_hfh": "Habitat for Humanity",
+                "opt_agency_irc": "International Red Cross",
+                "opt_prog_emergency": "Emergency Housing Relief",
+                "opt_prog_slum": "Urban Slum Regeneration",
+                "opt_prog_infra": "Community Infrastructure Grant",
+                "opt_own_informal": "Informal Settlement/Squatter",
+                "opt_own_rented": "Rented/Tenant",
+                "opt_own_damaged": "Damaged Owner",
+                "opt_own_displaced": "Displaced/Homeless"
             },
             "ko": {
                 "nav_mission": "미션",
@@ -894,7 +991,27 @@ contract AstraeaGrantEscrowVault {
                 "sim_allocated_grant": "할당된 지원금: {amount} USDC",
                 "sim_equivalent": "({local} 상당)",
                 "sim_postponed": "취약성 낮음 - 주거 개선 보류됨",
-                "btn_processing_efile": "전자파일 처리 및 전송 중..."
+                "btn_processing_efile": "전자파일 처리 및 전송 중...",
+                "lbl_funding_agency": "대상 지원 기관",
+                "lbl_program_type": "지원 프로그램 유형",
+                "lbl_household_size": "동거 가구원 수",
+                "lbl_dependents_count": "부양가족 수 (아동/노인/장애인 등)",
+                "lbl_monthly_income": "가구 월평균 소득 (USD)",
+                "lbl_housing_ownership": "현재 주거 형태",
+                "lbl_requested_amount": "요청 기금 총액 (USD)",
+                "lbl_budget_materials": "자재 구입비 비율 (%)",
+                "lbl_budget_labor": "인건비 및 기타 비율 (%)",
+                "opt_agency_un": "UN-Habitat",
+                "opt_agency_koica": "KOICA",
+                "opt_agency_hfh": "해비타트 (Habitat for Humanity)",
+                "opt_agency_irc": "국제적십자사 (International Red Cross)",
+                "opt_prog_emergency": "긴급 주거 지원",
+                "opt_prog_slum": "도시 슬럼 재개발",
+                "opt_prog_infra": "지역사회 인프라 기금",
+                "opt_own_informal": "비공식 주거지/무단점유",
+                "opt_own_rented": "임대/세입자",
+                "opt_own_damaged": "자가 (파손됨)",
+                "opt_own_displaced": "실직/노숙"
             },
             "sw": {
                 "nav_mission": "Mission",
@@ -1037,7 +1154,27 @@ contract AstraeaGrantEscrowVault {
                 "sim_allocated_grant": "Ruzuku Iliyotengwa: {amount} USDC",
                 "sim_equivalent": "({local} sawa na)",
                 "sim_postponed": "Uhatarishi mdogo - Maboresho yameahirishwa",
-                "btn_processing_efile": "Kusindika E-File..."
+                "btn_processing_efile": "Kusindika E-File...",
+                "lbl_funding_agency": "Mamlaka Inayolengwa ya Ruzuku",
+                "lbl_program_type": "Aina ya Mpango wa Ruzuku",
+                "lbl_household_size": "Idadi ya Wanakaya (Wakaaji)",
+                "lbl_dependents_count": "Idadi ya Wategemezi (Watoto/Wazee/Walemavu)",
+                "lbl_monthly_income": "Kipato cha Kaya kwa Mwezi (USD)",
+                "lbl_housing_ownership": "Hali ya Umiliki wa Nyumba",
+                "lbl_requested_amount": "Kiasi cha Ruzuku Kilichoombwa (USD)",
+                "lbl_budget_materials": "Bajeti ya Vifaa (%)",
+                "lbl_budget_labor": "Bajeti ya Nguvukazi/Nyingine (%)",
+                "opt_agency_un": "UN-Habitat",
+                "opt_agency_koica": "KOICA",
+                "opt_agency_hfh": "Habitat for Humanity",
+                "opt_agency_irc": "International Red Cross",
+                "opt_prog_emergency": "Msaada wa Dharura wa Nyumba",
+                "opt_prog_slum": "Uboreshaji wa Makazi duni ya Mijini",
+                "opt_prog_infra": "Ruzuku ya Miundombinu ya Jamii",
+                "opt_own_informal": "Makazi yasiyo rasmi/Kuvamia",
+                "opt_own_rented": "Kupanga/Mpangaji",
+                "opt_own_damaged": "Mmiliki mwenye Nyumba iliyoharibika",
+                "opt_own_displaced": "Wasio na Makazi"
             },
             "vi": {
                 "nav_mission": "Nhiệm vụ",
@@ -1159,7 +1296,27 @@ contract AstraeaGrantEscrowVault {
                 "sim_allocated_grant": "Khoản Tài Trợ Được Phân Bổ: {amount} USDC",
                 "sim_equivalent": "(tương đương {local})",
                 "sim_postponed": "Độ dễ tổn thương thấp - Trì hoãn nâng cấp",
-                "btn_processing_efile": "Đang xử lý E-File..."
+                "btn_processing_efile": "Đang xử lý E-File...",
+                "lbl_funding_agency": "Cơ quan Tài trợ Mục tiêu",
+                "lbl_program_type": "Loại Chương trình Tài trợ",
+                "lbl_household_size": "Số thành viên hộ gia đình (Số người ở)",
+                "lbl_dependents_count": "Số người phụ thuộc (Trẻ em/Người già/Khuyết tật)",
+                "lbl_monthly_income": "Thu nhập hàng tháng của hộ gia đình (USD)",
+                "lbl_housing_ownership": "Hình thức sở hữu nhà ở",
+                "lbl_requested_amount": "Số tiền tài trợ yêu cầu (USD)",
+                "lbl_budget_materials": "Ngân sách cho nguyên vật liệu (%)",
+                "lbl_budget_labor": "Ngân sách cho nhân công/khác (%)",
+                "opt_agency_un": "UN-Habitat",
+                "opt_agency_koica": "KOICA",
+                "opt_agency_hfh": "Tổ chức hỗ trợ gia cư Habitat",
+                "opt_agency_irc": "Hội Chữ thập đỏ Quốc tế",
+                "opt_prog_emergency": "Cứu trợ nhà ở khẩn cấp",
+                "opt_prog_slum": "Cải tạo khu ổ chuột đô thị",
+                "opt_prog_infra": "Tài trợ cơ sở hạ tầng cộng đồng",
+                "opt_own_informal": "Khu dân cư tự phát/Lấn chiếm",
+                "opt_own_rented": "Thuê/Người ở thuê",
+                "opt_own_damaged": "Chủ sở hữu nhà bị hư hỏng",
+                "opt_own_displaced": "Vô gia cư/Mất chỗ ở"
             },
             "hi": {
                 "nav_mission": "मिशन",
@@ -1281,7 +1438,27 @@ contract AstraeaGrantEscrowVault {
                 "sim_allocated_grant": "आवंटित अनुदान: {amount} USDC",
                 "sim_equivalent": "({local} के बराबर)",
                 "sim_postponed": "संवेदनशीलता कम - उन्नयन स्थगित",
-                "btn_processing_efile": "ई-फ़ाइल संसाधित हो रही है..."
+                "btn_processing_efile": "ई-फ़ाइल संसाधित हो रही है...",
+                "lbl_funding_agency": "लक्ष्य अनुदान एजेंसी",
+                "lbl_program_type": "अनुदान कार्यक्रम प्रकार",
+                "lbl_household_size": "घरेलू सदस्य संख्या (रहने वालों की संख्या)",
+                "lbl_dependents_count": "आश्रितों की संख्या (बच्चे/बुजुर्ग/विकलांग)",
+                "lbl_monthly_income": "मासिक घरेलू आय (USD)",
+                "lbl_housing_ownership": "आवास स्वामित्व का रूप",
+                "lbl_requested_amount": "अनुरोधित अनुदान राशि (USD)",
+                "lbl_budget_materials": "सामग्री के लिए बजट (%)",
+                "lbl_budget_labor": "श्रम/अन्य के लिए बजट (%)",
+                "opt_agency_un": "UN-Habitat",
+                "opt_agency_koica": "KOICA",
+                "opt_agency_hfh": "हैबिटेट फॉर ह्यूमैनिटी",
+                "opt_agency_irc": "इंटरनेशनल रेड क्रॉस",
+                "opt_prog_emergency": "आपातकालीन आवास राहत",
+                "opt_prog_slum": "शहरी स्लम पुनरुत्थान",
+                "opt_prog_infra": "सामुदायिक बुनियादी ढांचा अनुदान",
+                "opt_own_informal": "अनौपचारिक निपटान/स्क्वैटर",
+                "opt_own_rented": "किराए पर/किराएदार",
+                "opt_own_damaged": "क्षतिग्रस्त मालिक",
+                "opt_own_displaced": "विस्थापित/बेघर"
             }
         };
 
@@ -1348,91 +1525,169 @@ contract AstraeaGrantEscrowVault {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Set styles & branding slate background
+            // Draw slate-blue top banner
             doc.setFillColor(15, 23, 42); 
-            doc.rect(0, 0, 210, 40, 'F');
+            doc.rect(0, 0, 210, 38, 'F');
             
             doc.setFont("helvetica", "bold");
-            doc.setTextColor(0, 242, 254); // Cyan primary
-            doc.setFontSize(22);
-            doc.text("PROJECT ASTRAEA", 14, 23);
+            doc.setTextColor(0, 242, 254); // Neon Cyan
+            doc.setFontSize(20);
+            doc.text("PROJECT ASTRAEA", 14, 18);
             
             doc.setFont("helvetica", "normal");
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(9);
-            doc.text("B2G PUBLIC GRANT ALLOCATION & VERIFICATION INFRASTRUCTURE", 14, 31);
+            doc.setFontSize(8);
+            doc.text("B2G PUBLIC GRANT ESCROW & HOUSING INGRESS PLATFORM", 14, 25);
+            doc.setTextColor(141, 155, 176); // Text Gray
+            doc.text("OFFICIAL DONOR & AGENCY COMPLIANCE RECORD", 14, 30);
             
-            // Section 1: Applicant Information
-            doc.setTextColor(15, 23, 42);
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(13);
-            doc.text("1. APPLICANT INFORMATION", 14, 52);
+            let y = 48;
             
-            doc.setDrawColor(0, 242, 254);
-            doc.setLineWidth(0.5);
-            doc.line(14, 55, 196, 55);
-            
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "normal");
-            
-            let y = 63;
-            const addField = (label, val, isFixedFont = false) => {
+            // Page overflow manager
+            const checkPageOverflow = (neededHeight) => {
+                if (y + neededHeight > 275) {
+                    doc.addPage();
+                    // Draw a mini top banner on the new page
+                    doc.setFillColor(15, 23, 42); 
+                    doc.rect(0, 0, 210, 15, 'F');
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(0, 242, 254);
+                    doc.setFontSize(10);
+                    doc.text("PROJECT ASTRAEA - WAP/KOICA APPLICATION PROFILE", 14, 10);
+                    y = 25; // Reset y to top margin of the new page
+                }
+            };
+
+            // Helper function to draw Section Header
+            const drawSectionHeader = (title) => {
+                checkPageOverflow(25);
+                doc.setFillColor(241, 245, 249); 
+                doc.rect(14, y, 182, 7, 'F');
+                doc.setDrawColor(0, 242, 254);
+                doc.setLineWidth(0.5);
+                doc.line(14, y, 14, y + 7); // left indicator line
+                
                 doc.setFont("helvetica", "bold");
-                doc.text(`${label}:`, 14, y);
+                doc.setTextColor(15, 23, 42);
+                doc.setFontSize(9.5);
+                doc.text(title, 18, y + 5);
+                y += 12;
+            };
+
+            const addField = (label, val, xOffset, isFixedFont = false, maxW = 80) => {
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(71, 85, 105); // slate-600
+                doc.setFontSize(8.5);
+                doc.text(label, xOffset, y);
                 
                 if (isFixedFont) {
                     doc.setFont("courier", "bold");
+                    doc.setTextColor(251, 133, 0); // Accent orange
+                    doc.setFontSize(9);
                 } else {
                     doc.setFont("helvetica", "normal");
+                    doc.setTextColor(15, 23, 42);
+                    doc.setFontSize(9);
                 }
                 
-                const splitVal = doc.splitTextToSize(val || "N/A", 130);
-                doc.text(splitVal, 62, y);
-                y += (splitVal.length * 5) + 3;
+                const splitVal = doc.splitTextToSize(String(val || "N/A"), maxW);
+                doc.text(splitVal, xOffset, y + 4.5);
+                return (splitVal.length * 4.5) + 8;
             };
-            
-            addField("Application ID", data.trackingId, true);
-            addField("Full Name", data.name);
-            addField("Email Address", data.email);
-            addField("Selected Location", data.locationName);
-            addField("Date Submitted", data.timestamp);
-            
-            addField("Statement of Intent", data.intent);
-            addField("Health & Impact Expectation", data.health);
-            addField("Special Accessibility Needs", data.accessibility || "None");
-            
-            // Section 2: Technical Ingress Data
+
+            const drawRow = (fields) => {
+                let maxHeight = 0;
+                fields.forEach(f => {
+                    const tempDoc = new jsPDF();
+                    if (f.isFixed) {
+                        tempDoc.setFont("courier", "bold");
+                    } else {
+                        tempDoc.setFont("helvetica", "normal");
+                    }
+                    const splitVal = tempDoc.splitTextToSize(String(f.val || "N/A"), f.maxW || 80);
+                    const height = (splitVal.length * 4.5) + 8;
+                    if (height > maxHeight) maxHeight = height;
+                });
+                
+                checkPageOverflow(maxHeight);
+                
+                fields.forEach(f => {
+                    addField(f.label, f.val, f.xOffset, f.isFixed, f.maxW || 80);
+                });
+                
+                y += maxHeight;
+            };
+
+            // Section 1: GRANT CONTEXT & APPLICANT PROFILE
+            drawSectionHeader("1. GRANT CONTEXT & APPLICANT PROFILE");
+            drawRow([
+                { label: "Application ID", val: data.trackingId, xOffset: 14, isFixed: true, maxW: 80 },
+                { label: "Target Funding Agency", val: data.fundingAgency, xOffset: 110, maxW: 80 }
+            ]);
+            drawRow([
+                { label: "Full Name", val: data.name, xOffset: 14, maxW: 80 },
+                { label: "Email Address", val: data.email, xOffset: 110, maxW: 80 }
+            ]);
+            drawRow([
+                { label: "Selected Location Network", val: data.locationName, xOffset: 14, maxW: 80 },
+                { label: "Grant Program Type", val: data.programType, xOffset: 110, maxW: 80 }
+            ]);
+            drawRow([
+                { label: "Date Submitted", val: data.timestamp, xOffset: 14, maxW: 80 }
+            ]);
             y += 4;
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(13);
-            doc.text("2. TECHNICAL INGRESS VERIFICATION", 14, y);
-            y += 2;
-            doc.line(14, y, 196, y);
-            y += 7;
-            
-            addField("Spatial Obfuscation (H3 Res 8)", data.h3Index, true);
-            addField("zk-SNARK Containment Hash", data.zkpHash, true);
-            addField("VLM Model Target", "Gemini 3.5 Flash VLM");
-            addField("Compliance Status", data.complianceStatus);
-            
-            // Section 3: Escrow & Supplier Routing
+
+            // Section 2: HOUSEHOLD PROFILE & VULNERABILITY
+            drawSectionHeader("2. HOUSEHOLD PROFILE & VULNERABILITY");
+            drawRow([
+                { label: "Household Size", val: `${data.householdSize} occupants`, xOffset: 14, maxW: 35 },
+                { label: "Dependents Count", val: `${data.dependentsCount} dependents`, xOffset: 55, maxW: 40 },
+                { label: "Monthly Household Income", val: `$${data.monthlyIncomeUsd} USD`, xOffset: 110, maxW: 40 },
+                { label: "Housing Ownership Form", val: data.housingOwnership, xOffset: 155, maxW: 40 }
+            ]);
+            drawRow([
+                { label: "Statement of Intent", val: data.intent, xOffset: 14, maxW: 80 },
+                { label: "Health & Impact Expectation", val: data.health, xOffset: 110, maxW: 80 }
+            ]);
+            drawRow([
+                { label: "Special Accessibility Needs", val: data.accessibility || "None", xOffset: 14, maxW: 175 }
+            ]);
             y += 4;
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(13);
-            doc.text("3. ESCROW & SUPPLIER ROUTING", 14, y);
-            y += 2;
-            doc.line(14, y, 196, y);
-            y += 7;
-            
-            addField("Authorized Merchant", data.merchantName);
-            addField("Merchant Category (MCC)", data.mccCode);
-            addField("Auditing Agency Partner", data.agency);
-            addField("Milestone Escrow Vault", data.escrowAddress, true);
+
+            // Section 3: PROJECT BUDGET & ESCROW ROUTING
+            drawSectionHeader("3. PROJECT BUDGET & ESCROW ROUTING");
+            drawRow([
+                { label: "Requested Grant Amount", val: `$${data.requestedAmountUsd} USD`, xOffset: 14, maxW: 50 },
+                { label: "Budget Breakdown: Materials", val: `${data.budgetBreakdownMaterials}%`, xOffset: 70, maxW: 35 },
+                { label: "Budget Breakdown: Labor/Other", val: `${data.budgetBreakdownLabor}%`, xOffset: 110, maxW: 35 }
+            ]);
+            drawRow([
+                { label: "Authorized Merchant Target", val: data.merchantName, xOffset: 14, maxW: 80 },
+                { label: "Merchant Category (MCC)", val: data.mccCode, xOffset: 110, maxW: 80 }
+            ]);
+            drawRow([
+                { label: "Auditing Agency Partner", val: data.agency, xOffset: 14, maxW: 80 },
+                { label: "Milestone Escrow Vault", val: data.escrowAddress, xOffset: 110, isFixed: true, maxW: 80 }
+            ]);
+            y += 4;
+
+            // Section 4: TECHNICAL INGRESS & COMPLIANCE VERIFICATION
+            drawSectionHeader("4. TECHNICAL INGRESS & COMPLIANCE VERIFICATION");
+            drawRow([
+                { label: "Spatial Obfuscation (H3 Index Res 8)", val: data.h3Index, xOffset: 14, isFixed: true, maxW: 80 },
+                { label: "zk-SNARK Containment Hash", val: data.zkpHash, xOffset: 110, isFixed: true, maxW: 80 }
+            ]);
+            drawRow([
+                { label: "VLM Model Target", val: "Gemini 3.5 Flash VLM", xOffset: 14, maxW: 80 },
+                { label: "Compliance Status", val: data.complianceStatus, xOffset: 110, maxW: 80 }
+            ]);
             
             // Footer notice
             doc.setFont("helvetica", "italic");
-            doc.setFontSize(8);
-            doc.text("This document is generated by Project Astraea. Spatial coordinates have been obfuscated to preserve safety and privacy.", 14, 285);
+            doc.setFontSize(7.5);
+            doc.setTextColor(100, 116, 139); // slate-500
+            doc.text("This document is generated programmatically by Project Astraea. Spatial coordinates have been obfuscated using ZK Containment algorithms.", 14, 288);
+            doc.text("Unauthorized modifications to escrow destination routing addresses will automatically invalidate this validation record.", 14, 292);
             
             // Trigger PDF Download
             doc.save(`Astraea_Application_${data.trackingId}.pdf`);
@@ -2322,8 +2577,31 @@ contract AstraeaGrantEscrowVault {
                 const health = document.getElementById('intake-health').value.trim();
                 const accessibility = document.getElementById('intake-accessibility').value.trim();
                 
-                if (!name || !email || !intent || !health) {
-                    alert('Please fill out all required fields (Name, Email, Statement of Intent, and Health Expectation).');
+                // Read expanded fields
+                const fundingAgency = document.getElementById('intake-funding-agency').value;
+                const programType = document.getElementById('intake-program-type').value;
+                const householdSizeStr = document.getElementById('intake-household-size').value.trim();
+                const dependentsCountStr = document.getElementById('intake-dependents-count').value.trim();
+                const monthlyIncomeUsdStr = document.getElementById('intake-monthly-income').value.trim();
+                const housingOwnership = document.getElementById('intake-housing-ownership').value;
+                const requestedAmountUsdStr = document.getElementById('intake-requested-amount').value.trim();
+                const budgetBreakdownMaterialsStr = document.getElementById('intake-budget-materials').value.trim();
+                const budgetBreakdownLaborStr = document.getElementById('intake-budget-labor').value.trim();
+                
+                if (!name || !email || !intent || !health || !householdSizeStr || !dependentsCountStr || !monthlyIncomeUsdStr || !requestedAmountUsdStr || !budgetBreakdownMaterialsStr || !budgetBreakdownLaborStr) {
+                    alert('Please fill out all required fields (including Household Profile and Project Budget).');
+                    return;
+                }
+                
+                const householdSize = parseInt(householdSizeStr);
+                const dependentsCount = parseInt(dependentsCountStr);
+                const monthlyIncomeUsd = parseFloat(monthlyIncomeUsdStr);
+                const requestedAmountUsd = parseFloat(requestedAmountUsdStr);
+                const budgetBreakdownMaterials = parseFloat(budgetBreakdownMaterialsStr);
+                const budgetBreakdownLabor = parseFloat(budgetBreakdownLaborStr);
+                
+                if (isNaN(householdSize) || isNaN(dependentsCount) || isNaN(monthlyIncomeUsd) || isNaN(requestedAmountUsd) || isNaN(budgetBreakdownMaterials) || isNaN(budgetBreakdownLabor)) {
+                    alert('Please check that all numeric fields are filled out with valid positive numbers.');
                     return;
                 }
                 
@@ -2376,7 +2654,17 @@ contract AstraeaGrantEscrowVault {
                     merchantName: merchantConfig.name,
                     mccCode: `${merchantConfig.mcc} (${merchantConfig.desc})`,
                     agency: config.agency,
-                    escrowAddress: mapConfig.escrow
+                    escrowAddress: mapConfig.escrow,
+                    // Expanded fields
+                    fundingAgency,
+                    programType,
+                    householdSize,
+                    dependentsCount,
+                    monthlyIncomeUsd,
+                    housingOwnership,
+                    requestedAmountUsd,
+                    budgetBreakdownMaterials,
+                    budgetBreakdownLabor
                 };
                 
                 // Smooth scroll to the logger terminal to watch simulation
@@ -2402,7 +2690,7 @@ contract AstraeaGrantEscrowVault {
                         "event": "PDF_GENERATION_COMPLETE",
                         "status": "COMPILING_GRANT_PDF",
                         "timestamp": new Date().toISOString(),
-                        "message": "Successfully rendered official WAP/KOICA grant application PDF in-memory.",
+                        "message": "Successfully rendered official WAP/KOICA WAP/GCF grant application PDF in-memory.",
                         "output_file": `Astraea_Application_${trackingId}.pdf`,
                         "file_size_estimated": "248 KB"
                     });
@@ -2458,6 +2746,21 @@ contract AstraeaGrantEscrowVault {
                             "statement_of_intent": intent,
                             "health_outcomes_expectation": health,
                             "special_accessibility_needs": accessibility
+                        },
+                        "grant_context": {
+                            "funding_agency": fundingAgency,
+                            "program_type": programType
+                        },
+                        "household_profile_vulnerability": {
+                            "household_size": householdSize,
+                            "dependents_count": dependentsCount,
+                            "monthly_income_usd": monthlyIncomeUsd,
+                            "housing_ownership": housingOwnership
+                        },
+                        "project_budget_routing": {
+                            "requested_amount_usd": requestedAmountUsd,
+                            "budget_breakdown_materials_percentage": budgetBreakdownMaterials,
+                            "budget_breakdown_labor_percentage": budgetBreakdownLabor
                         },
                         "spatial_anonymization": {
                             "h3_index_level_8": currentApplicationData.h3Index,
