@@ -387,6 +387,56 @@ contract AstraeaGrantEscrowVault {
         </div>
     </section>
 
+    <section class="guide-section" id="guide">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="guide-title" data-i18n="guide_title">How It Works</h2>
+                <p class="section-desc" data-i18n="guide_desc">Streamlined 3-step validation and purpose-bound fund routing protocol.</p>
+            </div>
+            
+            <div class="guide-grid grid grid-3">
+                <div class="guide-card card-glass">
+                    <div class="guide-icon-wrapper">
+                        <!-- Camera Icon (Capture & Verify) -->
+                        <svg class="guide-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                    </div>
+                    <h3 class="guide-step-title" data-i18n="guide_step_1_title">1. Capture & Verify</h3>
+                    <p class="guide-step-desc" data-i18n="guide_step_1_text">Snap a photo of the area needing repairs with a smartphone camera (location tags ON) to extract GPS EXIF data and cross-verify with satellite photos.</p>
+                </div>
+                
+                <div class="guide-card card-glass">
+                    <div class="guide-icon-wrapper">
+                        <!-- Document Icon (Submit Application) -->
+                        <svg class="guide-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <polyline points="10 9 9 9 8 9"/>
+                        </svg>
+                    </div>
+                    <h3 class="guide-step-title" data-i18n="guide_step_2_title">2. Submit Application</h3>
+                    <p class="guide-step-desc" data-i18n="guide_step_2_text">Fill in household info and target funding purposes in the Intake Form below and submit.</p>
+                </div>
+                
+                <div class="guide-card card-glass">
+                    <div class="guide-icon-wrapper">
+                        <!-- Clock Icon (Track Status) -->
+                        <svg class="guide-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <h3 class="guide-step-title" data-i18n="guide_step_3_title">3. Track Status</h3>
+                    <p class="guide-step-desc" data-i18n="guide_step_3_text">Use the issued Tracking ID in the Status Tracker at the bottom to monitor real-time progress from VLM evaluation to escrow.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="upload-section" id="upload">
         <div class="container">
             <div class="section-header">
@@ -903,7 +953,15 @@ contract AstraeaGrantEscrowVault {
                 "opt_own_informal": "Informal Settlement/Squatter",
                 "opt_own_rented": "Rented/Tenant",
                 "opt_own_damaged": "Damaged Owner",
-                "opt_own_displaced": "Displaced/Homeless"
+                "opt_own_displaced": "Displaced/Homeless",
+                "guide_title": "How it Works",
+                "guide_desc": "Streamlined 3-step validation and purpose-bound fund routing protocol.",
+                "guide_step_1_title": "1. Capture & Verify",
+                "guide_step_1_text": "Snap a photo of the area needing repairs with a smartphone camera (location tags ON) to extract GPS EXIF data and cross-verify with satellite photos.",
+                "guide_step_2_title": "2. Submit Application",
+                "guide_step_2_text": "Fill in household info and target funding purposes in the Intake Form below and submit.",
+                "guide_step_3_title": "3. Track Status",
+                "guide_step_3_text": "Use the issued Tracking ID in the Status Tracker at the bottom to monitor real-time progress from VLM evaluation to escrow." 
             },
             "ko": {
                 "nav_mission": "미션",
@@ -1086,7 +1144,15 @@ contract AstraeaGrantEscrowVault {
                 "opt_own_informal": "비공식 주거지/무단점유",
                 "opt_own_rented": "임대/세입자",
                 "opt_own_damaged": "자가 (파손됨)",
-                "opt_own_displaced": "실직/노숙"
+                "opt_own_displaced": "실직/노숙",
+                "guide_title": "이용 방법 (How it Works)",
+                "guide_desc": "주거환경 검증 및 목적 지정 지원금 매칭을 위한 간소화된 3단계 프로토콜.",
+                "guide_step_1_title": "1. 촬영 및 위성 검증 (Capture & Verify)",
+                "guide_step_1_text": "스마트폰 카메라(위치 태그 켜짐)로 수리가 필요한 부위를 촬영하여 업로드하면, 시스템이 GPS EXIF 데이터를 추출하고 위성 정적 이미지와 교차 검증합니다.",
+                "guide_step_2_title": "2. 지원서 작성 (Submit Application)",
+                "guide_step_2_text": "하단의 신청서(Intake Form) 양식에 가구 인프라 현황 및 필요한 지원금 예산 계획을 작성하여 제출합니다.",
+                "guide_step_3_title": "3. 진행 상황 조회 (Track Status)",
+                "guide_step_3_text": "발급 완료된 조회 ID를 Status Tracker에 입력하여, VLM 실사 평가부터 최종 에스크로 자금 잠금까지의 실시간 상태를 확인합니다." 
             },
             "sw": {
                 "nav_mission": "Mission",
@@ -1249,7 +1315,15 @@ contract AstraeaGrantEscrowVault {
                 "opt_own_informal": "Makazi yasiyo rasmi/Kuvamia",
                 "opt_own_rented": "Kupanga/Mpangaji",
                 "opt_own_damaged": "Mmiliki mwenye Nyumba iliyoharibika",
-                "opt_own_displaced": "Wasio na Makazi"
+                "opt_own_displaced": "Wasio na Makazi",
+                "guide_title": "Jinsi Inavyofanya Kazi",
+                "guide_desc": "Itifaki rahisi ya hatua 3 ya uthibitishaji na uelekezaji wa fedha maalum.",
+                "guide_step_1_title": "1. Piga Picha & Thibitisha",
+                "guide_step_1_text": "Piga picha ya eneo linalohitaji matengenezo kwa kutumia kamera ya simu (alama ya eneo ikiwa IMEWASHWA) ili kupata data ya GPS EXIF na kuithibitisha kwa picha za satelaiti.",
+                "guide_step_2_title": "2. Tuma Ombi",
+                "guide_step_2_text": "Jaza maelezo ya kaya na malengo ya matumizi ya fedha katika Fomu ya Maombi hapa chini na utume.",
+                "guide_step_3_title": "3. Fuatilia Hali",
+                "guide_step_3_text": "Tumia ID ya Kufuatilia uliyopewa kwenye Kifuatilia Hali chini kabisa ili kuona maendeleo ya wakati halisi kutoka kwa tathmini ya VLM hadi escrow." 
             },
             "vi": {
                 "nav_mission": "Nhiệm vụ",
@@ -1391,7 +1465,15 @@ contract AstraeaGrantEscrowVault {
                 "opt_own_informal": "Khu dân cư tự phát/Lấn chiếm",
                 "opt_own_rented": "Thuê/Người ở thuê",
                 "opt_own_damaged": "Chủ sở hữu nhà bị hư hỏng",
-                "opt_own_displaced": "Vô gia cư/Mất chỗ ở"
+                "opt_own_displaced": "Vô gia cư/Mất chỗ ở",
+                "guide_title": "Quy trình Hoạt động",
+                "guide_desc": "Giao thức xác minh 3 bước đơn giản và định tuyến quỹ cứu trợ có điều kiện.",
+                "guide_step_1_title": "1. Chụp ảnh & Xác minh",
+                "guide_step_1_text": "Chụp ảnh khu vực cần sửa chữa bằng camera điện thoại (BẬT thẻ vị trí) để trích xuất dữ liệu GPS EXIF và đối chiếu chéo với ảnh vệ tinh.",
+                "guide_step_2_title": "2. Nộp Đơn đăng ký",
+                "guide_step_2_text": "Điền thông tin hộ gia đình và mục tiêu phân bổ ngân quỹ vào Đơn đăng ký (Intake Form) bên dưới rồi gửi đi.",
+                "guide_step_3_title": "3. Theo dõi Trạng thái",
+                "guide_step_3_text": "Sử dụng Mã theo dõi (Tracking ID) được cấp trong bảng Theo dõi trạng thái ở dưới cùng để giám sát tiến độ thực tế từ đánh giá VLM đến khóa quỹ ký quỹ." 
             },
             "hi": {
                 "nav_mission": "मिशन",
@@ -1533,7 +1615,15 @@ contract AstraeaGrantEscrowVault {
                 "opt_own_informal": "अनौपचारिक निपटान/स्क्वैटर",
                 "opt_own_rented": "किराए पर/किराएदार",
                 "opt_own_damaged": "क्षतिग्रस्त मालिक",
-                "opt_own_displaced": "विस्थापित/बेघर"
+                "opt_own_displaced": "विस्थापित/बेघर",
+                "guide_title": "यह कैसे काम करता है",
+                "guide_desc": "सुव्यवस्थित 3-चरणीय सत्यापन और उद्देश्य-बद्ध निधि रूटिंग प्रोटोकॉल।",
+                "guide_step_1_title": "1. कैप्चर और सत्यापित करें",
+                "guide_step_1_text": "सत्यापन के लिए स्मार्टफोन कैमरा (स्थान टैग चालू) के साथ मरम्मत की आवश्यकता वाले क्षेत्र की एक तस्वीर लें ताकि जीपीएस EXIF डेटा निकाला जा सके और उपग्रह तस्वीरों के साथ क्रॉस-सत्यापित किया जा सके।",
+                "guide_step_2_title": "2. आवेदन जमा करें",
+                "guide_step_2_text": "नीचे दिए गए आवेदन पत्र (Intake Form) में घरेलू जानकारी और लक्षित अनुदान उद्देश्यों को भरें और जमा करें।",
+                "guide_step_3_title": "3. स्थिति ट्रैक करें",
+                "guide_step_3_text": "वीएलएम (VLM) मूल्यांकन से लेकर अंतिम एस्क्रो तक की वास्तविक समय की प्रगति की निगरानी के लिए सबसे नीचे दिए गए स्टेटस ट्रैकर में जारी ट्रैकिंग आईडी का उपयोग करें।" 
             }
         };
 

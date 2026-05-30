@@ -1682,3 +1682,76 @@ textarea.form-control {
         box-shadow: 0 0 12px #ef4444, 0 0 24px rgba(239, 68, 68, 0.6);
     }
 }
+
+/* ==========================================
+   How It Works / User Guide Section
+   ========================================== */
+.guide-section {
+    padding: 5rem 0;
+    background: var(--bg-deep);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.guide-grid {
+    margin-top: 3rem;
+}
+
+.guide-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    transition: all var(--transition-speed) ease;
+}
+
+.guide-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 242, 254, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 242, 254, 0.05);
+}
+
+.guide-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(0, 242, 254, 0.06);
+    border: 1px solid rgba(0, 242, 254, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+    transition: all var(--transition-speed) ease;
+}
+
+.guide-card:hover .guide-icon-wrapper {
+    background: rgba(0, 242, 254, 0.12);
+    border-color: rgba(0, 242, 254, 0.4);
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    transform: scale(1.05);
+}
+
+.guide-svg {
+    width: 28px;
+    height: 28px;
+}
+
+.guide-step-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-white);
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.guide-step-desc {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    line-height: 1.6;
+}
+
