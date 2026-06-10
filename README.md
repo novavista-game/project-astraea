@@ -8,3 +8,10 @@ By synthesizing multi-modal smartphone imagery, edge-processed drone captures, a
 1. **Multimodal VLM Structural Analytics**: Visual analytics engine utilizing advanced Vision-Language Models (e.g., Gemini Flash) to extract structural metrics, degradation indices, and material quality scores.
 2. **Geo-Spatial Data Fusion Pipeline**: A decoupled data ingestion pipeline combining GPS coordinates, camera azimuth, OpenStreetMap, and ESA Sentinel imagery to resolve geographic coordinates without standard postal addresses.
 3. **Decentralized Economic Tokenization Pathways**: Algorithmic "Asset Credit Score" calculations integrated with a Stateless Tokenization Proxy and decentralized public ledgers to register property assets.
+
+---
+
+## License
+
+This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
+
